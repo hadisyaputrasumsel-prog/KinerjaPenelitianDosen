@@ -241,11 +241,11 @@ const pages = {
                 <div class="glass" style="padding: 2rem;">
                     <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Output Dokumen Riset per Prodi</h3>
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Total dokumen riset (Scopus & Google Scholar) yang terafiliasi dengan masing-masing Program Studi.</div>
-                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                    <div style="display: flex; flex-direction: column; gap: 3rem;">
                         <div style="height: 400px;">
                             <canvas id="outputProdiChart"></canvas>
                         </div>
-                        <div style="height: 400px;">
+                        <div style="height: 400px; border-top: 1px solid var(--border-glass); padding-top: 2rem;">
                             <canvas id="outputPieChart"></canvas>
                         </div>
                     </div>
