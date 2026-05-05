@@ -634,9 +634,6 @@ window.showLecturerDetail = (id) => {
             <a href="https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}" target="_blank" class="glass glass-hover" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none;">
                 <i class="fas fa-external-link-alt"></i> Cari di SINTA
             </a>
-            <a href="#" class="glass glass-hover" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; background: var(--secondary); color: var(--primary); border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none;">
-                <i class="fas fa-file-download"></i> Export CV
-            </a>
         </div>
     `;
 
