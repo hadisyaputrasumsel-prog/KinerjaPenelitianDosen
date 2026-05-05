@@ -517,7 +517,7 @@ function initAnalyticsCharts() {
         data: {
             labels: prodiLabels,
             datasets: [{
-                data: totalOutputPerProdi,
+                data: prodiLabels.map(prodi => prodiScopus[prodi] || 0),
                 backgroundColor: [
                     '#0f2e5a', '#d7ac7c', '#e11d48', '#f97316', 
                     '#fbbf24', '#4d7c0f', '#06b6d4', '#8b5cf6'
@@ -536,7 +536,7 @@ function initAnalyticsCharts() {
                 },
                 title: {
                     display: true,
-                    text: 'Proporsi Total Output per Program Studi',
+                    text: 'Distribusi Dokumen Scopus per Program Studi',
                     color: '#0f2e5a',
                     font: { size: 16, weight: '700' },
                     padding: { bottom: 20 }
