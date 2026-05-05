@@ -83,7 +83,7 @@ const pages = {
                         <h2 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Publikasi Terbaru</h2>
                         <div style="display: flex; flex-direction: column; gap: 1rem;">
                             ${publications.map(p => `
-                                <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(255,255,255,0.03)'" onclick="window.showLecturerDetail(${p.lecturerId})">
+                                <div style="padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 8px; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.08)'" onmouseout="this.style.background='rgba(0,0,0,0.03)'" onclick="window.showLecturerDetail(${p.lecturerId})">
                                     <div style="font-weight: 600; font-size: 0.9rem;">${p.title}</div>
                                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
                                         <span><i class="fas fa-user-circle"></i> ${lecturers.find(l => l.id === p.lecturerId)?.name || 'Unknown'} • ${p.year}</span>
@@ -128,7 +128,7 @@ const pages = {
                     <i class="fas fa-search" style="position: absolute; left: 1.5rem; top: 1.1rem; color: var(--text-muted);"></i>
                     <input type="text" class="search-input" placeholder="Cari nama dosen atau program studi..." id="lecturer-search" style="padding-left: 3.5rem; margin-bottom: 0;">
                 </div>
-                <select id="performance-filter" class="glass" style="padding: 1rem; border-radius: 12px; color: white; border: 1px solid var(--border-glass); outline: none;">
+                <select id="performance-filter" class="glass" style="padding: 1rem; border-radius: 12px; color: var(--text-main); border: 1px solid var(--border-glass); outline: none;">
                     <option value="all">Semua Kinerja</option>
                     <option value="unggul">Kinerja Unggul (> Rata-rata)</option>
                     <option value="baik">Kinerja Baik (&le; Rata-rata)</option>
@@ -191,7 +191,7 @@ const pages = {
                 </button>
 
                 <div id="crawl-status" style="margin-top: 2rem; display: none;">
-                    <div style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
+                    <div style="height: 4px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
                         <div id="crawl-progress" style="height: 100%; width: 0%; background: linear-gradient(to right, var(--neon-blue), var(--neon-purple)); transition: width 0.3s;"></div>
                     </div>
                     <p id="crawl-log" style="font-family: monospace; font-size: 0.8rem; color: #4ade80;"></p>
@@ -312,8 +312,8 @@ function initAnalyticsCharts() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#475569' } },
+                x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 10 } } }
             },
             plugins: { legend: { display: false } }
         }
@@ -342,14 +342,14 @@ function initAnalyticsCharts() {
             maintainAspectRatio: false,
             scales: {
                 x: { 
-                    title: { display: true, text: 'Produktivitas (SINTA 3Yr)', color: '#94a3b8' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }, 
-                    ticks: { color: '#94a3b8' }
+                    title: { display: true, text: 'Produktivitas (SINTA 3Yr)', color: '#475569' },
+                    grid: { color: 'rgba(0,0,0,0.1)' }, 
+                    ticks: { color: '#475569' }
                 },
                 y: { 
-                    title: { display: true, text: 'Dampak Riset (h-Index)', color: '#94a3b8' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }, 
-                    ticks: { color: '#94a3b8' }
+                    title: { display: true, text: 'Dampak Riset (h-Index)', color: '#475569' },
+                    grid: { color: 'rgba(0,0,0,0.1)' }, 
+                    ticks: { color: '#475569' }
                 }
             },
             plugins: {
@@ -393,7 +393,7 @@ function initAnalyticsCharts() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'right', labels: { color: '#94a3b8', font: { size: 9 }, usePointStyle: true } }
+                legend: { position: 'right', labels: { color: '#475569', font: { size: 9 }, usePointStyle: true } }
             }
         }
     });
@@ -415,9 +415,9 @@ function initAnalyticsCharts() {
             maintainAspectRatio: false,
             scales: {
                 r: {
-                    grid: { color: 'rgba(255,255,255,0.1)' },
-                    angleLines: { color: 'rgba(255,255,255,0.1)' },
-                    pointLabels: { color: '#94a3b8', font: { size: 9 } },
+                    grid: { color: 'rgba(0,0,0,0.1)' },
+                    angleLines: { color: 'rgba(0,0,0,0.1)' },
+                    pointLabels: { color: '#475569', font: { size: 9 } },
                     ticks: { display: false }
                 }
             },
@@ -481,8 +481,8 @@ function initAnalyticsCharts() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-                x: { stacked: true, grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#475569' } },
+                x: { stacked: true, grid: { display: false }, ticks: { color: '#475569', font: { size: 10 } } }
             },
             plugins: {
                 legend: {
@@ -507,7 +507,7 @@ function initAnalyticsCharts() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#94a3b8' } }
+                legend: { position: 'bottom', labels: { color: '#475569' } }
             }
         }
     });
@@ -534,8 +534,8 @@ function initDashboardCharts() {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
-                y: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+                x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.1)' }, ticks: { color: '#475569' } },
+                y: { grid: { display: false }, ticks: { color: '#475569', font: { size: 10 } } }
             },
             plugins: { legend: { display: false } },
             onClick: (event, elements) => {
@@ -620,7 +620,7 @@ window.showLecturerDetail = (id) => {
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 ${publications.filter(p => p.lecturerId === lecturer.id).length > 0 
                     ? publications.filter(p => p.lecturerId === lecturer.id).map(p => `
-                        <div style="padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--border-glass);">
+                        <div style="padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 8px; border: 1px solid var(--border-glass);">
                             <div style="font-weight: 600;">${p.title}</div>
                             <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.3rem;">${p.source} • ${p.year}</div>
                         </div>

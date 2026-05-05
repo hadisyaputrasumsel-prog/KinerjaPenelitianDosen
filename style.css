@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary: #6366f1;
-  --primary-glow: rgba(99, 102, 241, 0.5);
-  --secondary: #0ea5e9;
-  --bg-dark: #0f172a;
-  --bg-card: rgba(30, 41, 59, 0.7);
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-glass: rgba(255, 255, 255, 0.1);
+  --primary: #0f2e5a; /* UIGM Navy Blue */
+  --primary-glow: rgba(15, 46, 90, 0.2);
+  --secondary: #d7ac7c; /* UIGM Gold */
+  --bg-dark: #f0f4f8; /* Light grayish blue background */
+  --bg-card: rgba(255, 255, 255, 0.85); /* White glass */
+  --text-main: #1f2937; /* Dark text */
+  --text-muted: #64748b; /* Muted text */
+  --border-glass: rgba(15, 46, 90, 0.15); /* Darker border for light theme */
   --glass-blur: blur(12px);
-  --neon-blue: #00d2ff;
-  --neon-purple: #9d50bb;
+  --neon-blue: #0284c7; /* Darker blue */
+  --neon-purple: #0f2e5a; /* Same as primary */
 }
 
 * {
@@ -24,8 +24,8 @@ body {
   font-family: 'Inter', sans-serif;
   background: var(--bg-dark);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(14, 165, 233, 0.15) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(215, 172, 124, 0.15) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(15, 46, 90, 0.1) 0px, transparent 50%);
   color: var(--text-main);
   min-height: 100vh;
   overflow-x: hidden;
@@ -57,7 +57,8 @@ body {
 aside {
   padding: 2rem;
   border-right: 1px solid var(--border-glass);
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--primary); /* UIGM Navy Blue */
+  color: white;
 }
 
 main {
@@ -67,13 +68,12 @@ main {
 
 /* Components */
 .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: -1px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.logo img {
+  max-width: 150px;
+  height: auto;
 }
 
 nav ul {
@@ -88,20 +88,22 @@ nav a {
   display: flex;
   align-items: center;
   padding: 0.75rem 1rem;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.7); /* Muted white on navy */
   text-decoration: none;
   border-radius: 10px;
   transition: all 0.2s;
 }
 
 nav a.active, nav a:hover {
-  background: rgba(99, 102, 241, 0.1);
-  color: var(--text-main);
+  background: var(--secondary); /* UIGM Gold */
+  color: #0f2e5a; /* Navy text on gold background */
+  font-weight: 600;
 }
 
 nav a i {
-  margin-right: 12px;
+  margin-right: 1rem;
   font-size: 1.2rem;
+  color: inherit;
 }
 
 /* Stats Cards */
@@ -180,7 +182,7 @@ nav a i {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
   font-size: 0.7rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05); /* Dark transparent for light theme */
   border: 1px solid var(--border-glass);
 }
 
@@ -203,10 +205,10 @@ nav a i {
 .search-input {
   width: 100%;
   padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--border-glass);
   border-radius: 12px;
-  color: white;
+  color: var(--text-main);
   font-size: 1rem;
   outline: none;
   transition: border-color 0.3s;
