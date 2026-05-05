@@ -241,8 +241,13 @@ const pages = {
                 <div class="glass" style="padding: 2rem;">
                     <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Output Dokumen Riset per Prodi</h3>
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Total dokumen riset (Scopus & Google Scholar) yang terafiliasi dengan masing-masing Program Studi.</div>
-                    <div style="height: 400px;">
-                        <canvas id="outputProdiChart"></canvas>
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+                        <div style="height: 400px;">
+                            <canvas id="outputProdiChart"></canvas>
+                        </div>
+                        <div style="height: 400px;">
+                            <canvas id="outputPieChart"></canvas>
+                        </div>
                     </div>
                 </div>
                 <div class="glass" style="padding: 2rem;">
@@ -495,6 +500,45 @@ function initAnalyticsCharts() {
                 legend: {
                     position: 'top',
                     labels: { color: '#1e293b', font: { weight: '600' } }
+                }
+            }
+        }
+    });
+
+    const prodiLabels = Object.keys(prodiS1);
+    const totalOutputPerProdi = prodiLabels.map(prodi => 
+        (prodiS1[prodi] || 0) + (prodiS2[prodi] || 0) + (prodiS3[prodi] || 0) + 
+        (prodiS4[prodi] || 0) + (prodiS5[prodi] || 0) + (prodiS6[prodi] || 0) + 
+        (prodiScopus[prodi] || 0)
+    );
+
+    new Chart(document.getElementById('outputPieChart'), {
+        type: 'pie',
+        data: {
+            labels: prodiLabels,
+            datasets: [{
+                data: totalOutputPerProdi,
+                backgroundColor: [
+                    '#0f2e5a', '#d7ac7c', '#e11d48', '#f97316', 
+                    '#fbbf24', '#4d7c0f', '#06b6d4', '#8b5cf6'
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { boxWidth: 12, font: { size: 10 }, color: '#1e293b' }
+                },
+                title: {
+                    display: true,
+                    text: 'Distribusi Total Output',
+                    color: '#1e293b',
+                    font: { size: 14, weight: '700' }
                 }
             }
         }
