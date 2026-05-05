@@ -594,7 +594,10 @@ window.showLecturerDetail = (id) => {
         <div class="lecturer-header" style="margin-bottom: 2rem;">
             <div class="avatar" style="width: 80px; height: 80px; font-size: 2rem;">${lecturer.name.charAt(0)}</div>
             <div>
-                <h2 style="font-size: 1.8rem;">${lecturer.name}</h2>
+                <h2 style="font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                    ${lecturer.name} 
+                    ${lecturer.sintaId ? `<span class="pill" style="font-size: 0.8rem; background: var(--secondary); color: var(--primary); font-weight: 700; border: none; padding: 0.3rem 0.8rem;">SINTA ID: ${lecturer.sintaId}</span>` : ''}
+                </h2>
                 <p style="color: var(--text-muted); font-size: 1rem;">${lecturer.prodi}</p>
             </div>
         </div>
@@ -637,10 +640,19 @@ window.showLecturerDetail = (id) => {
             </div>
         </div>
 
-        <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-            <button onclick="window.handleSintaSearch(${lecturer.id})" class="glass glass-hover" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+        <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
+            <button onclick="window.handleSintaSearch(${lecturer.id})" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
                 <i class="fas fa-external-link-alt"></i> ${lecturer.sintaId ? 'Buka Profil SINTA' : 'Cari di SINTA'}
             </button>
+            <div id="sinta-input-container" style="display: none; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid var(--border-glass); animation: fadeIn 0.3s ease;">
+                <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.8rem; font-weight: 500;">
+                    Setelah profil terbuka di tab baru, silakan *copy* dan *paste* ID SINTA-nya ke bawah ini:
+                </p>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="number" id="sinta-id-input" class="search-input" placeholder="Contoh: 5973273" style="padding: 0.6rem 1rem; flex: 1; border-radius: 8px; font-size: 0.85rem; background: white; margin-bottom: 0;">
+                    <button onclick="window.saveSintaId(${lecturer.id})" style="background: var(--secondary); color: var(--primary); border: none; border-radius: 8px; padding: 0.6rem 1.5rem; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Simpan ID</button>
+                </div>
+            </div>
         </div>
     `;
 
@@ -655,18 +667,21 @@ window.handleSintaSearch = (id) => {
         window.open(`https://sinta.kemdiktisaintek.go.id/authors/profile/${lecturer.sintaId}`, '_blank');
     } else {
         window.open(`https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}`, '_blank');
-        
-        setTimeout(() => {
-            const inputId = prompt(`Apakah ini benar profil SINTA milik ${lecturer.name}?\nJika benar, silakan masukkan ID Sinta-nya (angka) agar tersimpan:`, '');
-            if (inputId && inputId.trim() !== '') {
-                lecturer.sintaId = inputId.trim();
-                const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
-                savedSintaIds[lecturer.id] = lecturer.sintaId;
-                localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
-                alert('ID SINTA berhasil disimpan! Lain kali Anda klik tombol ini, sistem akan langsung membuka profil SINTA tersebut.');
-                window.showLecturerDetail(id); // Re-render modal
-            }
-        }, 1000);
+        document.getElementById('sinta-input-container').style.display = 'block';
+    }
+};
+
+window.saveSintaId = (id) => {
+    const inputVal = document.getElementById('sinta-id-input').value.trim();
+    if (inputVal && inputVal !== '') {
+        const lecturer = lecturers.find(l => l.id === id);
+        lecturer.sintaId = inputVal;
+        const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+        savedSintaIds[lecturer.id] = lecturer.sintaId;
+        localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
+        window.showLecturerDetail(id); // Re-render modal to show new layout
+    } else {
+        alert('ID SINTA tidak boleh kosong!');
     }
 };
 
