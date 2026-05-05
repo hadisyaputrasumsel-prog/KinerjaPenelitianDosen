@@ -443,43 +443,43 @@ function initAnalyticsCharts() {
                 {
                     label: 'SINTA 1',
                     data: Object.values(prodiS1),
-                    backgroundColor: '#dc2626',
+                    backgroundColor: '#e11d48',
                     borderWidth: 0
                 },
                 {
                     label: 'SINTA 2',
                     data: Object.values(prodiS2),
-                    backgroundColor: '#ea580c',
+                    backgroundColor: '#f97316',
                     borderWidth: 0
                 },
                 {
                     label: 'SINTA 3',
                     data: Object.values(prodiS3),
-                    backgroundColor: '#d97706',
+                    backgroundColor: '#fbbf24',
                     borderWidth: 0
                 },
                 {
                     label: 'SINTA 4',
                     data: Object.values(prodiS4),
-                    backgroundColor: '#eab308',
+                    backgroundColor: '#4d7c0f',
                     borderWidth: 0
                 },
                 {
                     label: 'SINTA 5',
                     data: Object.values(prodiS5),
-                    backgroundColor: '#65a30d',
+                    backgroundColor: '#06b6d4',
                     borderWidth: 0
                 },
                 {
                     label: 'SINTA 6',
                     data: Object.values(prodiS6),
-                    backgroundColor: '#16a34a',
+                    backgroundColor: '#8b5cf6',
                     borderWidth: 0
                 },
                 {
                     label: 'Scopus',
                     data: Object.values(prodiScopus),
-                    backgroundColor: '#0ea5e9',
+                    backgroundColor: '#0f2e5a',
                     borderWidth: 0
                 }
             ]
@@ -494,7 +494,7 @@ function initAnalyticsCharts() {
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { color: '#cbd5e1' }
+                    labels: { color: '#1e293b', font: { weight: '600' } }
                 }
             }
         }
