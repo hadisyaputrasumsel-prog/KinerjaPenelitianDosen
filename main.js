@@ -232,6 +232,13 @@ const pages = {
                     </div>
                 </div>
                 <div class="glass" style="padding: 2rem;">
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.2rem;">Output Dokumen Riset per Prodi</h3>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">Total dokumen riset (Scopus & Google Scholar) yang terafiliasi dengan masing-masing Program Studi.</div>
+                    <div style="height: 400px;">
+                        <canvas id="outputProdiChart"></canvas>
+                    </div>
+                </div>
+                <div class="glass" style="padding: 2rem;">
                     <h3 style="margin-bottom: 1.5rem; font-size: 1.2rem;">Status Produktivitas Dosen</h3>
                     <div style="height: 350px;">
                         <canvas id="produktivitasChart"></canvas>
@@ -257,9 +264,31 @@ function initAnalyticsCharts() {
     
     const prodiAvgH = {};
     const prodiCounts = {};
+    const prodiS1 = {};
+    const prodiS2 = {};
+    const prodiS3 = {};
+    const prodiS4 = {};
+    const prodiS5 = {};
+    const prodiS6 = {};
+    
     lecturers.forEach(l => {
         prodiAvgH[l.prodi] = (prodiAvgH[l.prodi] || 0) + l.hIndex;
         prodiCounts[l.prodi] = (prodiCounts[l.prodi] || 0) + 1;
+        
+        // Simulasi SINTA 1-6 (S1/S2 mendekati Scopus, S3-S6 mendekati Google Scholar)
+        const s1 = Math.round(l.scopus * 0.2);
+        const s2 = Math.round(l.scopus * 0.8);
+        const s3 = Math.round(l.scholar * 0.1);
+        const s4 = Math.round(l.scholar * 0.4);
+        const s5 = Math.round(l.scholar * 0.3);
+        const s6 = Math.round(l.scholar * 0.2);
+
+        prodiS1[l.prodi] = (prodiS1[l.prodi] || 0) + s1;
+        prodiS2[l.prodi] = (prodiS2[l.prodi] || 0) + s2;
+        prodiS3[l.prodi] = (prodiS3[l.prodi] || 0) + s3;
+        prodiS4[l.prodi] = (prodiS4[l.prodi] || 0) + s4;
+        prodiS5[l.prodi] = (prodiS5[l.prodi] || 0) + s5;
+        prodiS6[l.prodi] = (prodiS6[l.prodi] || 0) + s6;
     });
     Object.keys(prodiAvgH).forEach(p => {
         prodiAvgH[p] = (prodiAvgH[p] / prodiCounts[p]).toFixed(1);
@@ -396,6 +425,65 @@ function initAnalyticsCharts() {
 
     const produktif = lecturers.filter(l => l.sinta3Yr >= 50).length;
     const tidakProduktif = lecturers.length - produktif;
+
+    new Chart(document.getElementById('outputProdiChart'), {
+        type: 'bar',
+        data: {
+            labels: Object.keys(prodiS1),
+            datasets: [
+                {
+                    label: 'SINTA 1',
+                    data: Object.values(prodiS1),
+                    backgroundColor: '#dc2626',
+                    borderWidth: 0
+                },
+                {
+                    label: 'SINTA 2',
+                    data: Object.values(prodiS2),
+                    backgroundColor: '#ea580c',
+                    borderWidth: 0
+                },
+                {
+                    label: 'SINTA 3',
+                    data: Object.values(prodiS3),
+                    backgroundColor: '#d97706',
+                    borderWidth: 0
+                },
+                {
+                    label: 'SINTA 4',
+                    data: Object.values(prodiS4),
+                    backgroundColor: '#eab308',
+                    borderWidth: 0
+                },
+                {
+                    label: 'SINTA 5',
+                    data: Object.values(prodiS5),
+                    backgroundColor: '#65a30d',
+                    borderWidth: 0
+                },
+                {
+                    label: 'SINTA 6',
+                    data: Object.values(prodiS6),
+                    backgroundColor: '#16a34a',
+                    borderWidth: 0
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } },
+                x: { stacked: true, grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { color: '#cbd5e1' }
+                }
+            }
+        }
+    });
 
     new Chart(document.getElementById('produktivitasChart'), {
         type: 'pie',
@@ -535,8 +623,8 @@ window.showLecturerDetail = (id) => {
         </div>
 
         <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-            <a href="https://sinta.kemdiktisaintek.go.id/authors/profile/${lecturer.id}" target="_blank" class="glass" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; color: white; font-size: 0.9rem;">
-                <i class="fas fa-external-link-alt"></i> Profil SINTA
+            <a href="https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}" target="_blank" class="glass" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; color: white; font-size: 0.9rem;">
+                <i class="fas fa-external-link-alt"></i> Cari di SINTA
             </a>
             <a href="#" class="glass" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; color: white; font-size: 0.9rem;">
                 <i class="fas fa-file-download"></i> Export CV
