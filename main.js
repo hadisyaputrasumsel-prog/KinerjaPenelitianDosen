@@ -675,36 +675,63 @@ window.handleSintaSearch = (id) => {
         const actionsEl = document.getElementById('sinta-confirm-actions');
         
         confirmContainer.style.display = 'block';
-        statusEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sedang mendeteksi ID dari SINTA...`;
+        statusEl.innerHTML = `<i class="fas fa-search fa-spin"></i> Sedang menghubungkan ke SINTA untuk deteksi otomatis...`;
         actionsEl.style.display = 'none';
 
-        // Attempt to detect ID via proxy
-        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`)
-            .then(response => response.json())
-            .then(data => {
-                const html = data.contents;
+        // Helper to try multiple proxies
+        const tryFetch = (proxyUrl, originalUrl) => {
+            return fetch(proxyUrl + encodeURIComponent(originalUrl))
+                .then(r => r.json())
+                .then(data => data.contents || data.result || data);
+        };
+
+        // Try AllOrigins first
+        tryFetch('https://api.allorigins.win/get?url=', searchUrl)
+            .then(html => {
                 const match = html.match(/profile\/(\d+)/);
                 if (match && match[1]) {
-                    window.detectedSintaId = match[1];
-                    statusEl.innerHTML = `
-                        <div style="color: #22c55e; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> Berhasil mendeteksi ID!</div>
-                        <div style="font-size: 1.1rem; font-weight: 700;">ID SINTA: ${match[1]}</div>
-                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">Silakan cek tab baru. Jika profil tersebut benar milik <b>${lecturer.name}</b>, klik konfirmasi di bawah:</div>
-                    `;
-                    actionsEl.style.display = 'flex';
+                    processSuccess(match[1]);
                 } else {
-                    statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i> Maaf, ID tidak terdeteksi otomatis. Silakan masukkan manual:
-                        <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Masukkan ID Sinta" style="margin-top:0.5rem; background:white;">
-                        <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; margin-top:0.5rem; background:var(--primary); color:white; border:none; padding:0.5rem; border-radius:5px;">Simpan Manual</button>
-                    `;
+                    throw new Error('ID not found in HTML');
                 }
             })
-            .catch(err => {
-                statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i> Gagal terhubung ke detektor. Silakan masukkan manual:
-                    <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Masukkan ID Sinta" style="margin-top:0.5rem; background:white;">
-                    <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; margin-top:0.5rem; background:var(--primary); color:white; border:none; padding:0.5rem; border-radius:5px;">Simpan Manual</button>
-                `;
+            .catch(() => {
+                // Fallback to CORSProxy.io (using direct fetch as it often works better)
+                statusEl.innerHTML = `<i class="fas fa-sync fa-spin"></i> Mencoba jalur deteksi alternatif...`;
+                return fetch(`https://corsproxy.io/?${encodeURIComponent(searchUrl)}`)
+                    .then(r => r.text())
+                    .then(html => {
+                        const match = html.match(/profile\/(\d+)/);
+                        if (match && match[1]) {
+                            processSuccess(match[1]);
+                        } else {
+                            statusEl.innerHTML = `
+                                <div style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> ID belum terdeteksi otomatis karena proteksi SINTA.</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan masukkan 7 digit ID yang ada di URL tab baru:</div>
+                                <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Contoh: 5973273" style="background:white; margin-bottom:0.5rem;">
+                                <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
+                            `;
+                        }
+                    })
+                    .catch(() => {
+                        statusEl.innerHTML = `
+                            <div style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Deteksi otomatis terhambat keamanan SINTA.</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan ambil 7 digit ID dari URL di tab SINTA yang terbuka dan masukkan di bawah:</div>
+                            <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Masukkan ID SINTA" style="background:white; margin-bottom:0.5rem;">
+                            <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
+                        `;
+                    });
             });
+
+        function processSuccess(detectedId) {
+            window.detectedSintaId = detectedId;
+            statusEl.innerHTML = `
+                <div style="color: #22c55e; margin-bottom: 0.5rem; font-weight: 700;"><i class="fas fa-check-circle"></i> Berhasil mendeteksi ID Dosen!</div>
+                <div style="background: var(--secondary); color: var(--primary); display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-size: 1.2rem; font-weight: 800; margin-bottom: 0.8rem;">${detectedId}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Jika profil di tab baru benar milik <b>${lecturer.name}</b>, silakan konfirmasi:</div>
+            `;
+            actionsEl.style.display = 'flex';
+        }
     }
 };
 
