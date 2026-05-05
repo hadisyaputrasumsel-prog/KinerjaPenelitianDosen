@@ -1,5 +1,12 @@
 import { lecturers, publications, stats } from './data.js';
 
+// Load saved SINTA IDs from Local Storage
+const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+lecturers.forEach(l => {
+    if (savedSintaIds[l.id]) {
+        l.sintaId = savedSintaIds[l.id];
+    }
+});
 const contentArea = document.getElementById('content-area');
 const pageTitle = document.getElementById('page-title');
 const navLinks = document.querySelectorAll('.nav-link');
@@ -631,13 +638,36 @@ window.showLecturerDetail = (id) => {
         </div>
 
         <div style="margin-top: 2rem; display: flex; gap: 1rem;">
-            <a href="https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}" target="_blank" class="glass glass-hover" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none;">
-                <i class="fas fa-external-link-alt"></i> Cari di SINTA
-            </a>
+            <button onclick="window.handleSintaSearch(${lecturer.id})" class="glass glass-hover" style="flex: 1; padding: 1rem; text-align: center; text-decoration: none; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                <i class="fas fa-external-link-alt"></i> ${lecturer.sintaId ? 'Buka Profil SINTA' : 'Cari di SINTA'}
+            </button>
         </div>
     `;
 
     modalContainer.style.display = 'flex';
+};
+
+window.handleSintaSearch = (id) => {
+    const lecturer = lecturers.find(l => l.id === id);
+    if (!lecturer) return;
+
+    if (lecturer.sintaId) {
+        window.open(`https://sinta.kemdiktisaintek.go.id/authors/profile/${lecturer.sintaId}`, '_blank');
+    } else {
+        window.open(`https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}`, '_blank');
+        
+        setTimeout(() => {
+            const inputId = prompt(`Apakah ini benar profil SINTA milik ${lecturer.name}?\nJika benar, silakan masukkan ID Sinta-nya (angka) agar tersimpan:`, '');
+            if (inputId && inputId.trim() !== '') {
+                lecturer.sintaId = inputId.trim();
+                const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+                savedSintaIds[lecturer.id] = lecturer.sintaId;
+                localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
+                alert('ID SINTA berhasil disimpan! Lain kali Anda klik tombol ini, sistem akan langsung membuka profil SINTA tersebut.');
+                window.showLecturerDetail(id); // Re-render modal
+            }
+        }, 1000);
+    }
 };
 
 function startCrawlSimulation() {
