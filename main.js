@@ -641,16 +641,16 @@ window.showLecturerDetail = (id) => {
         </div>
 
         <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-            <button onclick="window.handleSintaSearch(${lecturer.id})" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
-                <i class="fas fa-external-link-alt"></i> ${lecturer.sintaId ? 'Buka Profil SINTA' : 'Cari di SINTA'}
+            <button id="sinta-action-btn" onclick="window.handleSintaSearch(${lecturer.id})" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                <i class="fas fa-external-link-alt"></i> ${lecturer.sintaId ? 'Buka Profil SINTA' : 'Cari & Deteksi ID SINTA'}
             </button>
-            <div id="sinta-input-container" style="display: none; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid var(--border-glass); animation: fadeIn 0.3s ease;">
-                <p style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.8rem; font-weight: 500;">
-                    Setelah profil terbuka di tab baru, silakan *copy* dan *paste* ID SINTA-nya ke bawah ini:
-                </p>
-                <div style="display: flex; gap: 0.5rem;">
-                    <input type="number" id="sinta-id-input" class="search-input" placeholder="Contoh: 5973273" style="padding: 0.6rem 1rem; flex: 1; border-radius: 8px; font-size: 0.85rem; background: white; margin-bottom: 0;">
-                    <button onclick="window.saveSintaId(${lecturer.id})" style="background: var(--secondary); color: var(--primary); border: none; border-radius: 8px; padding: 0.6rem 1.5rem; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Simpan ID</button>
+            <div id="sinta-confirm-container" style="display: none; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid var(--border-glass); animation: fadeIn 0.3s ease;">
+                <div id="sinta-detection-status" style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.8rem; font-weight: 500;">
+                    <i class="fas fa-spinner fa-spin"></i> Mencari profil...
+                </div>
+                <div id="sinta-confirm-actions" style="display: none; gap: 0.5rem;">
+                    <button onclick="window.saveSintaId(${lecturer.id})" style="background: #22c55e; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Ya, Benar (Simpan)</button>
+                    <button onclick="document.getElementById('sinta-confirm-container').style.display='none'" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Bukan</button>
                 </div>
             </div>
         </div>
@@ -666,22 +666,67 @@ window.handleSintaSearch = (id) => {
     if (lecturer.sintaId) {
         window.open(`https://sinta.kemdiktisaintek.go.id/authors/profile/${lecturer.sintaId}`, '_blank');
     } else {
-        window.open(`https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}`, '_blank');
-        document.getElementById('sinta-input-container').style.display = 'block';
+        const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(lecturer.name)}`;
+        window.open(searchUrl, '_blank');
+        
+        const confirmContainer = document.getElementById('sinta-confirm-container');
+        const statusEl = document.getElementById('sinta-detection-status');
+        const actionsEl = document.getElementById('sinta-confirm-actions');
+        
+        confirmContainer.style.display = 'block';
+        statusEl.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Sedang mendeteksi ID dari SINTA...`;
+        actionsEl.style.display = 'none';
+
+        // Attempt to detect ID via proxy
+        fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(searchUrl)}`)
+            .then(response => response.json())
+            .then(data => {
+                const html = data.contents;
+                const match = html.match(/profile\/(\d+)/);
+                if (match && match[1]) {
+                    window.detectedSintaId = match[1];
+                    statusEl.innerHTML = `
+                        <div style="color: #22c55e; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> Berhasil mendeteksi ID!</div>
+                        <div style="font-size: 1.1rem; font-weight: 700;">ID SINTA: ${match[1]}</div>
+                        <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">Silakan cek tab baru. Jika profil tersebut benar milik <b>${lecturer.name}</b>, klik konfirmasi di bawah:</div>
+                    `;
+                    actionsEl.style.display = 'flex';
+                } else {
+                    statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i> Maaf, ID tidak terdeteksi otomatis. Silakan masukkan manual:
+                        <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Masukkan ID Sinta" style="margin-top:0.5rem; background:white;">
+                        <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; margin-top:0.5rem; background:var(--primary); color:white; border:none; padding:0.5rem; border-radius:5px;">Simpan Manual</button>
+                    `;
+                }
+            })
+            .catch(err => {
+                statusEl.innerHTML = `<i class="fas fa-exclamation-circle" style="color: #ef4444;"></i> Gagal terhubung ke detektor. Silakan masukkan manual:
+                    <input type="number" id="sinta-id-input-manual" class="search-input" placeholder="Masukkan ID Sinta" style="margin-top:0.5rem; background:white;">
+                    <button onclick="window.saveSintaIdManual(${lecturer.id})" style="width:100%; margin-top:0.5rem; background:var(--primary); color:white; border:none; padding:0.5rem; border-radius:5px;">Simpan Manual</button>
+                `;
+            });
     }
 };
 
 window.saveSintaId = (id) => {
-    const inputVal = document.getElementById('sinta-id-input').value.trim();
-    if (inputVal && inputVal !== '') {
+    const lecturer = lecturers.find(l => l.id === id);
+    if (!lecturer || !window.detectedSintaId) return;
+    
+    lecturer.sintaId = window.detectedSintaId;
+    const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+    savedSintaIds[lecturer.id] = lecturer.sintaId;
+    localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
+    window.showLecturerDetail(id);
+};
+
+window.saveSintaIdManual = (id) => {
+    const inputVal = document.getElementById('sinta-id-input-manual').value.trim();
+    if (inputVal) {
         const lecturer = lecturers.find(l => l.id === id);
         lecturer.sintaId = inputVal;
         const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
         savedSintaIds[lecturer.id] = lecturer.sintaId;
         localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
-        window.showLecturerDetail(id); // Re-render modal to show new layout
-    } else {
-        alert('ID SINTA tidak boleh kosong!');
+        window.showLecturerDetail(id);
     }
 };
 
