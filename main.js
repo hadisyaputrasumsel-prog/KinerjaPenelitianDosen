@@ -245,7 +245,7 @@ const pages = {
                         <div style="height: 400px;">
                             <canvas id="outputProdiChart"></canvas>
                         </div>
-                        <div style="height: 400px; border-top: 1px solid var(--border-glass); padding-top: 2rem;">
+                        <div style="height: 550px; border-top: 1px solid var(--border-glass); padding-top: 2rem;">
                             <canvas id="outputPieChart"></canvas>
                         </div>
                     </div>
@@ -531,15 +531,19 @@ function initAnalyticsCharts() {
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom',
-                    labels: { boxWidth: 12, font: { size: 10 }, color: '#1e293b' }
+                    position: 'right',
+                    labels: { boxWidth: 15, font: { size: 11, weight: '500' }, color: '#1e293b', padding: 20 }
                 },
                 title: {
                     display: true,
-                    text: 'Distribusi Total Output',
-                    color: '#1e293b',
-                    font: { size: 14, weight: '700' }
+                    text: 'Proporsi Total Output per Program Studi',
+                    color: '#0f2e5a',
+                    font: { size: 16, weight: '700' },
+                    padding: { bottom: 20 }
                 }
+            },
+            layout: {
+                padding: 20
             }
         }
     });
