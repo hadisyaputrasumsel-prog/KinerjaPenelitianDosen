@@ -567,7 +567,7 @@ function renderLecturerCards(data) {
             <div class="lecturer-header">
                 <div class="avatar">${l.name.charAt(0)}</div>
                 <div class="lecturer-info">
-                    <h3>${l.name}</h3>
+                    <h3>${l.name} ${l.sintaId ? `<span style="font-size: 0.6rem; background: var(--secondary); color: var(--primary); padding: 0.1rem 0.4rem; border-radius: 4px; margin-left: 0.3rem;">ID: ${l.sintaId}</span>` : ''}</h3>
                     <p>${l.prodi}</p>
                 </div>
             </div>
