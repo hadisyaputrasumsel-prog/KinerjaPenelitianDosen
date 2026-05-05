@@ -30,7 +30,7 @@ function render(template) {
 // Pages
 const pages = {
     dashboard: () => {
-        pageTitle.innerText = 'Dashboard Kinerja';
+        pageTitle.innerText = 'Dashboard Kinerja Penelitian';
         render(`
             <div class="stats-grid">
                 <div class="stat-card glass glass-hover">
