@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UIGM - Kinerja Penelitian Dosen</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <aside>
+            <div class="logo">UIGM Research</div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-page="lecturers"><i class="fas fa-users"></i> Data Dosen</a></li>
+                    <li><a href="#" class="nav-link" data-page="crawl"><i class="fas fa-spider"></i> Crawl Engine</a></li>
+                    <li><a href="#" class="nav-link" data-page="analytics"><i class="fas fa-project-diagram"></i> Analytics</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <main>
+            <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <div>
+                    <h1 id="page-title">Dashboard Kinerja</h1>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Monitoring & Pelaporan Kinerja Penelitian Dosen UIGM.</p>
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <button id="download-report" class="glass glass-hover" style="background: var(--primary); border: none; padding: 0.6rem 1.2rem; color: white; font-weight: 600; cursor: pointer; border-radius: 10px; font-size: 0.85rem;">
+                        <i class="fas fa-file-pdf"></i> Download Laporan
+                    </button>
+                    <div class="realtime-badge">
+                        <div class="dot"></div>
+                        REAL-TIME UPDATING
+                    </div>
+                </div>
+            </header>
+
+            <div id="content-area">
+                <!-- Content will be injected here by main.js -->
+            </div>
+        </main>
+    </div>
+    <div id="modal-container" class="modal-overlay" style="display: none;">
+        <div class="modal-content glass">
+            <button id="close-modal" class="close-btn">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
