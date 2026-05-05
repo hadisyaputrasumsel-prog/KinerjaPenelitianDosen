@@ -270,6 +270,7 @@ function initAnalyticsCharts() {
     const prodiS4 = {};
     const prodiS5 = {};
     const prodiS6 = {};
+    const prodiScopus = {};
     
     lecturers.forEach(l => {
         prodiAvgH[l.prodi] = (prodiAvgH[l.prodi] || 0) + l.hIndex;
@@ -289,6 +290,7 @@ function initAnalyticsCharts() {
         prodiS4[l.prodi] = (prodiS4[l.prodi] || 0) + s4;
         prodiS5[l.prodi] = (prodiS5[l.prodi] || 0) + s5;
         prodiS6[l.prodi] = (prodiS6[l.prodi] || 0) + s6;
+        prodiScopus[l.prodi] = (prodiScopus[l.prodi] || 0) + l.scopus;
     });
     Object.keys(prodiAvgH).forEach(p => {
         prodiAvgH[p] = (prodiAvgH[p] / prodiCounts[p]).toFixed(1);
@@ -465,6 +467,12 @@ function initAnalyticsCharts() {
                     label: 'SINTA 6',
                     data: Object.values(prodiS6),
                     backgroundColor: '#16a34a',
+                    borderWidth: 0
+                },
+                {
+                    label: 'Scopus',
+                    data: Object.values(prodiScopus),
+                    backgroundColor: '#0ea5e9',
                     borderWidth: 0
                 }
             ]
