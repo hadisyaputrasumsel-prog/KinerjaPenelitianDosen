@@ -717,6 +717,14 @@ window.saveSintaId = (id) => {
     savedSintaIds[lecturer.id] = lecturer.sintaId;
     localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
     window.showLecturerDetail(id);
+    
+    // Auto-refresh main grid
+    const grid = document.getElementById('lecturer-list');
+    if (grid) {
+        grid.innerHTML = renderLecturerCards([...lecturers].sort((a, b) => b.sinta3Yr - a.sinta3Yr));
+        const searchInput = document.getElementById('lecturer-search');
+        if (searchInput && searchInput.value) searchInput.dispatchEvent(new Event('input'));
+    }
 };
 
 window.saveSintaIdManual = (id) => {
@@ -728,6 +736,14 @@ window.saveSintaIdManual = (id) => {
         savedSintaIds[lecturer.id] = lecturer.sintaId;
         localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
         window.showLecturerDetail(id);
+        
+        // Auto-refresh main grid
+        const grid = document.getElementById('lecturer-list');
+        if (grid) {
+            grid.innerHTML = renderLecturerCards([...lecturers].sort((a, b) => b.sinta3Yr - a.sinta3Yr));
+            const searchInput = document.getElementById('lecturer-search');
+            if (searchInput && searchInput.value) searchInput.dispatchEvent(new Event('input'));
+        }
     }
 };
 
