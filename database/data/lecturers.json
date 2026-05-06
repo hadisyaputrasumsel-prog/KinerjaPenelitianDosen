@@ -1,0 +1,112 @@
+[
+  {
+    "id": 1,
+    "name": "AHMAD SANMORINO",
+    "prodi": "Sistem Informasi (S1)",
+    "sintaOverall": 2008,
+    "sinta3Yr": 754,
+    "scholar": 248,
+    "scopus": 33,
+    "scopusHIndex": 10,
+    "hIndex": 16
+  },
+  {
+    "id": 2,
+    "name": "RENDRA GUSTRIANSYAH",
+    "prodi": "Teknik Informatika (S1)",
+    "sintaOverall": 1910,
+    "sinta3Yr": 708,
+    "scholar": 230,
+    "scopus": 25,
+    "scopusHIndex": 8,
+    "hIndex": 15
+  },
+  {
+    "id": 3,
+    "name": "LESI HERTATI",
+    "prodi": "Akuntansi (S1)",
+    "sintaOverall": 1680,
+    "sinta3Yr": 698,
+    "scholar": 451,
+    "scopus": 3,
+    "scopusHIndex": 1,
+    "hIndex": 29
+  },
+  {
+    "id": 4,
+    "name": "TERTTIAAVINI",
+    "prodi": "Ilmu Komputer (S2)",
+    "sintaOverall": 1719,
+    "sinta3Yr": 694,
+    "scholar": 274,
+    "scopus": 13,
+    "scopusHIndex": 3,
+    "hIndex": 15
+  },
+  {
+    "id": 5,
+    "name": "SHINTA PUSPASARI",
+    "prodi": "Teknik Informatika (S1)",
+    "sintaOverall": 1669,
+    "sinta3Yr": 622,
+    "scholar": 180,
+    "scopus": 24,
+    "scopusHIndex": 7,
+    "hIndex": 12
+  },
+  {
+    "id": 6,
+    "name": "ENDAH DEWI PURNAMASARI",
+    "prodi": "Manajemen (S1)",
+    "sintaOverall": 1382,
+    "sinta3Yr": 480,
+    "scholar": 231,
+    "scopus": 5,
+    "scopusHIndex": 1,
+    "hIndex": 15
+  },
+  {
+    "id": 7,
+    "name": "FATHONI USMAN",
+    "prodi": "Teknik Sipil (S1)",
+    "sintaOverall": 2082,
+    "sinta3Yr": 463,
+    "scholar": 280,
+    "scopus": 43,
+    "scopusHIndex": 13,
+    "hIndex": 16
+  },
+  {
+    "id": 8,
+    "name": "NAZORI SUHANDI",
+    "prodi": "Teknik Informatika (S1)",
+    "sintaOverall": 1137,
+    "sinta3Yr": 456,
+    "scholar": 172,
+    "scopus": 21,
+    "scopusHIndex": 6,
+    "hIndex": 10
+  },
+  {
+    "id": 9,
+    "name": "MUHAMMAD IQBAL",
+    "prodi": "Biologi (S1)",
+    "sintaOverall": 3705,
+    "sinta3Yr": 435,
+    "scholar": 268,
+    "scopus": 35,
+    "scopusHIndex": 11,
+    "hIndex": 16
+  },
+  {
+    "id": 10,
+    "name": "TIEN YUSTINI",
+    "prodi": "Manajemen (S2)",
+    "sintaOverall": 1065,
+    "sinta3Yr": 395,
+    "scholar": 183,
+    "scopus": 7,
+    "scopusHIndex": 2,
+    "hIndex": 12
+  }
+]

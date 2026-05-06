@@ -1,0 +1,55 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="search-container" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+    <div style="position: relative; flex: 1;">
+        <i class="fas fa-search" style="position: absolute; left: 1.5rem; top: 1.1rem; color: var(--text-muted);"></i>
+        <input type="text" class="search-input" placeholder="Cari nama dosen atau program studi..." id="lecturer-search" style="padding-left: 3.5rem; width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--border-glass);">
+    </div>
+</div>
+
+<div class="lecturer-grid" id="lecturer-list">
+    @foreach($lecturers as $l)
+        <div class="lecturer-card glass">
+            <div class="lecturer-header">
+                <div class="avatar">{{ substr($l['name'], 0, 1) }}</div>
+                <div class="lecturer-info">
+                    <h3>{{ $l['name'] }}</h3>
+                    <p>{{ $l['prodi'] }}</p>
+                </div>
+            </div>
+            <div class="performance-pills">
+                <div class="pill">SINTA Overall: {{ $l['sintaOverall'] }}</div>
+                <div class="pill">SINTA 3Yr: {{ $l['sinta3Yr'] }}</div>
+                <div class="pill">Scholar: {{ $l['scholar'] }}</div>
+                <div class="pill">Scopus: {{ $l['scopus'] }}</div>
+            </div>
+        </div>
+    @endforeach
+</div>
+
+<style>
+    .lecturer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .lecturer-card { padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .lecturer-header { display: flex; align-items: center; gap: 1rem; }
+    .avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+    .performance-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pill { padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.7rem; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--border-glass); }
+</style>
+
+<script>
+    document.getElementById('lecturer-search').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.lecturer-card');
+        cards.forEach(card => {
+            const name = card.querySelector('h3').innerText.toLowerCase();
+            const prodi = card.querySelector('p').innerText.toLowerCase();
+            if (name.includes(query) || prodi.includes(query)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
+@endsection
