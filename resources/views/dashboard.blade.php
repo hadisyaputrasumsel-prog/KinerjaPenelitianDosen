@@ -52,11 +52,14 @@
             <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem;">Dosen dengan SINTA 3Yr = 0 (Total SINTA > 100)</div>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 @foreach(collect($lecturers)->filter(fn($l) => $l['sinta3Yr'] == 0 && $l['sintaOverall'] > 100)->take(3) as $l)
-                    <div style="padding: 1rem; background: rgba(239, 68, 68, 0.05); border-radius: 8px;">
+                    <div onclick='window.showLecturerDetail(@json($l))' style="padding: 1rem; background: rgba(239, 68, 68, 0.05); border-radius: 8px; cursor: pointer;" class="glass-hover" data-id="{{ $l['id'] }}">
                         <div style="font-weight: 600; font-size: 0.9rem;">{{ $l['name'] }}</div>
                         <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; display: flex; justify-content: space-between;">
                             <span>{{ $l['prodi'] }}</span>
                             <span style="color: #ef4444; font-weight: bold;">Overall: {{ $l['sintaOverall'] }}</span>
+                        </div>
+                        <div class="sinta-id-badge" style="display: none; margin-top: 0.25rem;">
+                            <span class="pill" style="background: var(--secondary); color: var(--primary); font-weight: 700; font-size: 0.65rem; border: none; padding: 0.2rem 0.5rem;">SINTA ID: <span class="sinta-id-val"></span></span>
                         </div>
                     </div>
                 @endforeach
@@ -91,6 +94,20 @@
                     y: { grid: { display: false } }
                 },
                 plugins: { legend: { display: false } }
+            }
+        });
+
+        // Read SINTA IDs from localStorage and show on cards
+        const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+        document.querySelectorAll('.glass-hover').forEach(card => {
+            const id = card.dataset.id;
+            if (id && savedSintaIds[id]) {
+                const badge = card.querySelector('.sinta-id-badge');
+                if (badge) {
+                    const val = card.querySelector('.sinta-id-val');
+                    val.innerText = savedSintaIds[id];
+                    badge.style.display = 'block';
+                }
             }
         });
     });

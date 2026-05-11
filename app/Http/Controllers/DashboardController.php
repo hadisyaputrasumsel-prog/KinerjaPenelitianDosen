@@ -44,4 +44,48 @@ class DashboardController extends Controller
 
         return view('lecturers', compact('lecturers', 'avgSinta3Yr'));
     }
+
+    public function crawl()
+    {
+        return view('crawl');
+    }
+
+    public function analytics()
+    {
+        $jsonPath = database_path('data/lecturers.json');
+        $lecturers = json_decode(File::get($jsonPath), true);
+        return view('analytics', compact('lecturers'));
+    }
+
+    public function sintaProxy(\Illuminate\Http\Request $request)
+    {
+        $name = $request->query('name');
+        if (!$name) {
+            return response()->json(["error" => "No name provided"]);
+        }
+
+        $url = "https://sinta.kemdiktisaintek.go.id/authors?q=" . urlencode($name);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $headers = [
+            'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+            'Accept-Language: en-US,en;q=0.9,id;q=0.8',
+            'Connection: keep-alive',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $html = curl_exec($ch);
+        curl_close($ch);
+
+        if (preg_match_all('/profile\/(\d+)/', $html, $matches)) {
+            $id = $matches[1][0];
+            return response()->json(["success" => true, "id" => $id]);
+        } else {
+            return response()->json(["success" => false, "message" => "ID not found or blocked by Cloudflare"]);
+        }
+    }
 }

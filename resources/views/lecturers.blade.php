@@ -10,12 +10,15 @@
 
 <div class="lecturer-grid" id="lecturer-list">
     @foreach($lecturers as $l)
-        <div class="lecturer-card glass">
+        <div class="lecturer-card glass" data-id="{{ $l['id'] }}">
             <div class="lecturer-header">
                 <div class="avatar">{{ substr($l['name'], 0, 1) }}</div>
                 <div class="lecturer-info">
                     <h3>{{ $l['name'] }}</h3>
                     <p>{{ $l['prodi'] }}</p>
+                    <div class="sinta-id-badge" style="display: none; margin-top: 0.25rem;">
+                        <span class="pill" style="background: var(--secondary); color: var(--primary); font-weight: 700; font-size: 0.65rem; border: none; padding: 0.2rem 0.5rem;">SINTA ID: <span class="sinta-id-val"></span></span>
+                    </div>
                 </div>
             </div>
             <div class="performance-pills">
@@ -24,6 +27,7 @@
                 <div class="pill">Scholar: {{ $l['scholar'] }}</div>
                 <div class="pill">Scopus: {{ $l['scopus'] }}</div>
             </div>
+            <button onclick='window.showLecturerDetail(@json($l))' class="glass glass-hover" style="margin-top: auto; padding: 0.5rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.8rem; cursor: pointer; font-weight: 600;">Lihat Detail</button>
         </div>
     @endforeach
 </div>
@@ -50,6 +54,18 @@
                 card.style.display = 'none';
             }
         });
+    });
+
+    // Read SINTA IDs from localStorage and show on cards
+    const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+    document.querySelectorAll('.lecturer-card').forEach(card => {
+        const id = card.dataset.id;
+        if (savedSintaIds[id]) {
+            const badge = card.querySelector('.sinta-id-badge');
+            const val = card.querySelector('.sinta-id-val');
+            val.innerText = savedSintaIds[id];
+            badge.style.display = 'block';
+        }
     });
 </script>
 @endsection
