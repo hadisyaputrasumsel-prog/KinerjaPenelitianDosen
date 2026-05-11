@@ -1,0 +1,10 @@
+[
+  { "id": 1, "lecturerId": 1, "title": "Optimasi Algoritma Klasifikasi", "source": "Perguruan Tinggi", "year": 2024 },
+  { "id": 2, "lecturerId": 2, "title": "Analisis Data Besar untuk Kesehatan", "source": "Mandiri", "year": 2025 },
+  { "id": 3, "lecturerId": 3, "title": "Pengembangan Sistem IoT Smart City", "source": "Lembaga Dalam Negeri", "year": 2025 },
+  { "id": 4, "lecturerId": 4, "title": "Studi Kelayakan Bisnis Digital", "source": "Perguruan Tinggi", "year": 2026 },
+  { "id": 5, "lecturerId": 5, "title": "Kolaborasi Internasional AI", "source": "Lembaga Luar Negeri", "year": 2024 },
+  { "id": 6, "lecturerId": 6, "title": "Penerapan Green Computing", "source": "Mandiri", "year": 2026 },
+  { "id": 7, "lecturerId": 7, "title": "Survei Kepuasan Pelanggan E-Commerce", "source": "Lembaga Dalam Negeri", "year": 2024 },
+  { "id": 8, "lecturerId": 8, "title": "Pengembangan Mobile App Edukasi", "source": "Perguruan Tinggi", "year": 2025 }
+]

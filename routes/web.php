@@ -9,3 +9,5 @@ Route::get('/lecturers', [DashboardController::class, 'lecturers'])->name('lectu
 Route::get('/crawl', [DashboardController::class, 'crawl'])->name('crawl');
 Route::get('/analytics', [DashboardController::class, 'analytics'])->name('analytics');
 Route::get('/sinta-proxy', [DashboardController::class, 'sintaProxy'])->name('sinta.proxy');
+Route::get('/accreditation', [DashboardController::class, 'accreditation'])->name('accreditation');
+Route::get('/crawl-scholar', [DashboardController::class, 'crawlScholar'])->name('crawl.scholar');

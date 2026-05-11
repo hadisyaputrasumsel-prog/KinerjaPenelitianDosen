@@ -138,6 +138,7 @@
                     <li><a href="{{ route('lecturers') }}" class="{{ request()->routeIs('lecturers') ? 'active' : '' }}"><i class="fas fa-users"></i> Data Dosen</a></li>
                     <li><a href="{{ route('crawl') }}" class="{{ request()->routeIs('crawl') ? 'active' : '' }}"><i class="fas fa-spider"></i> Crawl Engine</a></li>
                     <li><a href="{{ route('analytics') }}" class="{{ request()->routeIs('analytics') ? 'active' : '' }}"><i class="fas fa-project-diagram"></i> Analytics</a></li>
+                    <li><a href="{{ route('accreditation') }}" class="{{ request()->routeIs('accreditation') ? 'active' : '' }}"><i class="fas fa-file-alt"></i> Laporan Akreditasi</a></li>
                 </ul>
             </nav>
         </aside>

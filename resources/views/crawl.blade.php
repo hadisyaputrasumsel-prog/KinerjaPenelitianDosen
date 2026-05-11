@@ -20,15 +20,19 @@
         </div>
     </div>
 
+    <div style="margin-bottom: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+        <input type="text" id="scholar-name" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-glass); border-radius: 10px; background: rgba(255,255,255,0.8);" placeholder="Masukkan Nama Dosen (Contoh: Ahmad Sanmorino)">
+    </div>
+
     <button id="start-crawl" class="glass glass-hover" style="background: var(--primary); border: none; padding: 1rem 2rem; color: white; font-weight: 600; cursor: pointer; border-radius: 12px;">
-        Start Multi-Source Crawling
+        Cari di Scholar
     </button>
 
     <div id="crawl-status" style="margin-top: 2rem; display: none;">
         <div style="height: 4px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden; margin-bottom: 1rem;">
             <div id="crawl-progress" style="height: 100%; width: 0%; background: linear-gradient(to right, #0ea5e9, #8b5cf6); transition: width 0.3s;"></div>
         </div>
-        <p id="crawl-log" style="font-family: monospace; font-size: 0.8rem; color: #22c55e;"></p>
+        <div id="crawl-log" style="font-family: monospace; font-size: 0.9rem; color: var(--text-main); text-align: left; background: rgba(0,0,0,0.03); padding: 1rem; border-radius: 10px;"></div>
     </div>
 </div>
 
@@ -41,36 +45,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const spiderIcon = document.querySelector('.fa-spider');
     
     btn.addEventListener('click', function() {
+        const name = document.getElementById('scholar-name').value;
+        if (!name) {
+            alert('Silakan masukkan nama dosen!');
+            return;
+        }
+
         btn.disabled = true;
-        btn.innerText = 'Crawling in Progress...';
+        btn.innerText = 'Searching on Scholar...';
         status.style.display = 'block';
         spiderIcon.classList.add('fa-spin');
-        
-        const logs = [
-            'Initializing connection to PDDikti...',
-            'Syncing names with SINTA Database...',
-            'Scraping Google Scholar citations for SUYANTI...',
-            'Fetching Scopus API for MARZUKI ALIE...',
-            'Updating publication metadata for 100 lecturers...',
-            'Calculating h-Index trends...',
-            'Finalizing data synchronization...'
-        ];
-        
-        let step = 0;
-        const interval = setInterval(() => {
-            if (step >= logs.length) {
-                clearInterval(interval);
-                btn.innerText = 'Crawl Finished';
-                log.innerText = 'Synchronization Complete. Data is now real-time.';
+        progress.style.width = '30%';
+        log.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Mencari profil <b>${name}</b> di Google Scholar...`;
+
+        fetch(`/crawl-scholar?name=${encodeURIComponent(name)}`)
+            .then(r => r.json())
+            .then(data => {
+                progress.style.width = '100%';
                 spiderIcon.classList.remove('fa-spin');
-                return;
-            }
-            
-            const perc = ((step + 1) / logs.length) * 100;
-            progress.style.width = `${perc}%`;
-            log.innerText = `> ${logs[step]}`;
-            step++;
-        }, 1500);
+                btn.disabled = false;
+                btn.innerText = 'Cari di Scholar';
+
+                if (data.success) {
+                    log.innerHTML = `
+                        <div style="color: #22c55e; font-weight: bold; margin-bottom: 0.5rem;"><i class="fas fa-check-circle"></i> Berhasil menemukan profil!</div>
+                        <div style="margin-bottom: 0.5rem;"><b>Scholar ID:</b> ${data.scholarId}</div>
+                        <div style="margin-bottom: 0.5rem;"><b>Jumlah Publikasi:</b> ${data.publications_count}</div>
+                        
+                        ${data.titles ? `
+                            <div style="margin-top: 1rem; font-weight: bold;">Top 5 Publikasi:</div>
+                            <ul style="text-align: left; margin-top: 0.5rem; padding-left: 1.5rem;">
+                                ${data.titles.map(t => `<li style="margin-bottom: 0.3rem;">${t}</li>`).join('')}
+                            </ul>
+                        ` : ''}
+                    `;
+                } else {
+                    log.innerHTML = `<div style="color: #ef4444;"><i class="fas fa-times-circle"></i> Error: ${data.message}</div>`;
+                }
+            })
+            .catch(err => {
+                progress.style.width = '100%';
+                spiderIcon.classList.remove('fa-spin');
+                btn.disabled = false;
+                btn.innerText = 'Cari di Scholar';
+                log.innerHTML = `<div style="color: #ef4444;"><i class="fas fa-times-circle"></i> Error: Gagal menghubungi server.</div>`;
+            });
     });
 });
 </script>
