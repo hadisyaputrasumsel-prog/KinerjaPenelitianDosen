@@ -186,13 +186,8 @@
             const modalBody = document.getElementById('modal-body');
             const modalContainer = document.getElementById('modal-container');
             
-            // Load saved SINTA ID if exists
-            const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
-            const sintaId = savedSintaIds[lecturer.id] || lecturer.sintaId || null;
-            
-            // Load saved status if exists
-            const savedStatuses = JSON.parse(localStorage.getItem('lecturerStatuses') || '{}');
-            const currentStatus = savedStatuses[lecturer.id] || 'Aktif';
+            const sintaId = lecturer.sintaId || null;
+            const currentStatus = lecturer.status || 'Aktif';
 
             modalBody.innerHTML = `
                 <div class="lecturer-header" style="margin-bottom: 2rem;">
