@@ -256,4 +256,26 @@ class DashboardController extends Controller
 
         return response()->json(["success" => false, "message" => "Profile not found on Google Scholar"]);
     }
+
+    public function updateLecturer(\Illuminate\Http\Request $request)
+    {
+        $id = $request->input('id');
+        $status = $request->input('status');
+        $sintaId = $request->input('sintaId');
+
+        $jsonPath = database_path('data/lecturers.json');
+        $lecturers = json_decode(\Illuminate\Support\Facades\File::get($jsonPath), true);
+
+        foreach ($lecturers as &$l) {
+            if ($l['id'] == $id) {
+                if ($status) $l['status'] = $status;
+                if ($sintaId) $l['sintaId'] = $sintaId;
+                break;
+            }
+        }
+
+        \Illuminate\Support\Facades\File::put($jsonPath, json_encode($lecturers, JSON_PRETTY_PRINT));
+
+        return response()->json(["success" => true]);
+    }
 }

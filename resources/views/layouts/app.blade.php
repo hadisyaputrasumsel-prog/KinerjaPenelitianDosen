@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>UIGM - Kinerja Penelitian Dosen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -308,23 +309,61 @@
 
         window.saveSintaId = function(id) {
             if (!window.detectedSintaId) return;
+            
             const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
             savedSintaIds[id] = window.detectedSintaId;
             localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
-            alert('ID SINTA berhasil disimpan!');
-            document.getElementById('modal-container').style.display = 'none';
-            location.reload();
+            
+            fetch('/update-lecturer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ id: id, sintaId: window.detectedSintaId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('ID SINTA berhasil disimpan di server!');
+                    location.reload();
+                } else {
+                    alert('Gagal menyimpan ID SINTA di server.');
+                }
+            })
+            .catch(() => {
+                alert('Terjadi kesalahan saat menghubungi server.');
+            });
         };
 
         window.saveSintaIdManual = function(id) {
             const manualId = document.getElementById('sinta-id-input-manual').value;
             if (!manualId) return;
+            
             const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
             savedSintaIds[id] = manualId;
             localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
-            alert('ID SINTA berhasil disimpan!');
-            document.getElementById('modal-container').style.display = 'none';
-            location.reload();
+            
+            fetch('/update-lecturer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ id: id, sintaId: manualId })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('ID SINTA berhasil disimpan di server!');
+                    location.reload();
+                } else {
+                    alert('Gagal menyimpan ID SINTA di server.');
+                }
+            })
+            .catch(() => {
+                alert('Terjadi kesalahan saat menghubungi server.');
+            });
         };
 
         window.showManualInput = function(id) {
@@ -344,8 +383,27 @@
             const savedStatuses = JSON.parse(localStorage.getItem('lecturerStatuses') || '{}');
             savedStatuses[id] = status;
             localStorage.setItem('lecturerStatuses', JSON.stringify(savedStatuses));
-            alert('Status dosen berhasil diperbarui!');
-            location.reload();
+            
+            fetch('/update-lecturer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ id: id, status: status })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Status dosen berhasil diperbarui di server!');
+                    location.reload();
+                } else {
+                    alert('Gagal memperbarui status di server.');
+                }
+            })
+            .catch(() => {
+                alert('Terjadi kesalahan saat menghubungi server.');
+            });
         };
     </script>
 </body>

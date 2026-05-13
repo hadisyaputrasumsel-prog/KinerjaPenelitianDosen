@@ -19,6 +19,9 @@
                     <div class="sinta-id-badge" style="display: none; margin-top: 0.25rem;">
                         <span class="pill" style="background: var(--secondary); color: var(--primary); font-weight: 700; font-size: 0.65rem; border: none; padding: 0.2rem 0.5rem;">SINTA ID: <span class="sinta-id-val"></span></span>
                     </div>
+                    <div class="status-badge" style="display: none; margin-top: 0.25rem;">
+                        <span class="pill status-val" style="font-weight: 700; font-size: 0.65rem; border: none; padding: 0.2rem 0.5rem; color: white;"></span>
+                    </div>
                 </div>
             </div>
             <div class="performance-pills">
@@ -56,16 +59,29 @@
         });
     });
 
-    // Read SINTA IDs from localStorage and show on cards
+    // Read SINTA IDs and Statuses from localStorage and show on cards
     const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
+    const savedStatuses = JSON.parse(localStorage.getItem('lecturerStatuses') || '{}');
+    
     document.querySelectorAll('.lecturer-card').forEach(card => {
         const id = card.dataset.id;
+        
+        // Handle SINTA ID
         if (savedSintaIds[id]) {
             const badge = card.querySelector('.sinta-id-badge');
             const val = card.querySelector('.sinta-id-val');
             val.innerText = savedSintaIds[id];
             badge.style.display = 'block';
         }
+        
+        // Handle Status
+        const status = savedStatuses[id] || 'Aktif';
+        const statusBadge = card.querySelector('.status-badge');
+        const statusVal = card.querySelector('.status-val');
+        
+        statusVal.innerText = status;
+        statusVal.style.background = status === 'Aktif' ? '#22c55e' : (status === 'Pensiun' ? '#f59e0b' : '#ef4444');
+        statusBadge.style.display = 'block';
     });
 </script>
 @endsection
