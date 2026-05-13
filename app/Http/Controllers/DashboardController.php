@@ -9,8 +9,9 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $jsonPath = database_path('data/lecturers.json');
-        $lecturers = json_decode(File::get($jsonPath), true);
+        $lecturers = \Illuminate\Support\Facades\DB::table('lecturers')->get()->map(function($item) {
+            return (array) $item;
+        })->toArray();
 
         // Calculate Stats
         $totalLecturers = count($lecturers);
@@ -36,8 +37,9 @@ class DashboardController extends Controller
 
     public function lecturers()
     {
-        $jsonPath = database_path('data/lecturers.json');
-        $lecturers = json_decode(File::get($jsonPath), true);
+        $lecturers = \Illuminate\Support\Facades\DB::table('lecturers')->get()->map(function($item) {
+            return (array) $item;
+        })->toArray();
         
         // Stats for filtering
         $avgSinta3Yr = round(array_sum(array_column($lecturers, 'sinta3Yr')) / count($lecturers));
@@ -92,8 +94,13 @@ class DashboardController extends Controller
 
     public function accreditation()
     {
-        $research = json_decode(file_get_contents(database_path('data/research.json')), true);
-        $publications = json_decode(file_get_contents(database_path('data/publications.json')), true);
+        $research = \Illuminate\Support\Facades\DB::table('research')->get()->map(function($item) {
+            return (array) $item;
+        })->toArray();
+        
+        $publications = \Illuminate\Support\Facades\DB::table('publications')->get()->map(function($item) {
+            return (array) $item;
+        })->toArray();
 
         // Define years
         $ts = 2026;
@@ -263,18 +270,17 @@ class DashboardController extends Controller
         $status = $request->input('status');
         $sintaId = $request->input('sintaId');
 
-        $jsonPath = database_path('data/lecturers.json');
-        $lecturers = json_decode(\Illuminate\Support\Facades\File::get($jsonPath), true);
+        $data = [];
+        if ($status) $data['status'] = $status;
+        if ($sintaId) $data['sintaId'] = $sintaId;
 
-        foreach ($lecturers as &$l) {
-            if ($l['id'] == $id) {
-                if ($status) $l['status'] = $status;
-                if ($sintaId) $l['sintaId'] = $sintaId;
-                break;
-            }
+        if (empty($data)) {
+            return response()->json(["success" => false, "message" => "No data to update"]);
         }
 
-        \Illuminate\Support\Facades\File::put($jsonPath, json_encode($lecturers, JSON_PRETTY_PRINT));
+        $updated = \Illuminate\Support\Facades\DB::table('lecturers')
+            ->where('id', $id)
+            ->update($data);
 
         return response()->json(["success" => true]);
     }
