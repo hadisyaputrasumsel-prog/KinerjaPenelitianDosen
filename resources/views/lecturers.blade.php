@@ -4,7 +4,7 @@
 <div class="search-container" style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
     <div style="position: relative; flex: 1;">
         <i class="fas fa-search" style="position: absolute; left: 1.5rem; top: 1.1rem; color: var(--text-muted);"></i>
-        <input type="text" class="search-input" placeholder="Cari nama dosen atau program studi..." id="lecturer-search" style="padding-left: 3.5rem; width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--border-glass);">
+        <input type="text" class="search-input" placeholder="Cari nama dosen atau program studi..." id="lecturer-search" style="width: 100%; padding: 1rem; padding-left: 3.5rem; border-radius: 12px; border: 1px solid var(--border-glass);">
     </div>
 </div>
 

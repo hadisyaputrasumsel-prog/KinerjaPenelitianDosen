@@ -188,6 +188,10 @@
             // Load saved SINTA ID if exists
             const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
             const sintaId = savedSintaIds[lecturer.id] || lecturer.sintaId || null;
+            
+            // Load saved status if exists
+            const savedStatuses = JSON.parse(localStorage.getItem('lecturerStatuses') || '{}');
+            const currentStatus = savedStatuses[lecturer.id] || 'Aktif';
 
             modalBody.innerHTML = `
                 <div class="lecturer-header" style="margin-bottom: 2rem;">
@@ -196,6 +200,7 @@
                         <h2 style="font-size: 1.8rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                             ${lecturer.name} 
                             ${sintaId ? `<span class="pill" style="font-size: 0.8rem; background: var(--secondary); color: var(--primary); font-weight: 700; border: none; padding: 0.3rem 0.8rem;">SINTA ID: ${sintaId}</span>` : ''}
+                            <span class="pill" style="font-size: 0.8rem; background: ${currentStatus === 'Aktif' ? '#22c55e' : (currentStatus === 'Pensiun' ? '#f59e0b' : '#ef4444')}; color: white; font-weight: 700; border: none; padding: 0.3rem 0.8rem;">${currentStatus}</span>
                         </h2>
                         <p style="color: var(--text-muted); font-size: 1rem;">${lecturer.prodi}</p>
                     </div>
@@ -225,7 +230,7 @@
                 </div>
 
                 <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-                    <button id="sinta-action-btn" onclick="window.handleSintaSearch(${lecturer.id}, '${lecturer.name}')" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                    <button id="sinta-action-btn" onclick="window.handleSintaSearch('${lecturer.id}', '${lecturer.name}')" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
                         <i class="fas fa-external-link-alt"></i> ${sintaId ? 'Buka Profil SINTA' : 'Cari & Deteksi ID SINTA'}
                     </button>
                     <div id="sinta-confirm-container" style="display: none; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid var(--border-glass);">
@@ -233,8 +238,17 @@
                             <i class="fas fa-spinner fa-spin"></i> Mencari profil...
                         </div>
                         <div id="sinta-confirm-actions" style="display: none; gap: 0.5rem;">
-                            <button onclick="window.saveSintaId(${lecturer.id})" style="background: #22c55e; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Ya, Benar (Simpan)</button>
-                            <button onclick="document.getElementById('sinta-confirm-container').style.display='none'" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Bukan</button>
+                            <button onclick="window.saveSintaId('${lecturer.id}')" style="background: #22c55e; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Ya, Benar (Simpan)</button>
+                            <button onclick="window.showManualInput('${lecturer.id}')" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Bukan</button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;">Update Status Dosen:</div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="window.updateStatus('${lecturer.id}', 'Pensiun')" style="background: #f59e0b; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Pensiun</button>
+                            <button onclick="window.updateStatus('${lecturer.id}', 'Berhenti')" style="background: #ef4444; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Berhenti</button>
+                            <button onclick="window.updateStatus('${lecturer.id}', 'Aktif')" style="background: #22c55e; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; flex: 1; cursor: pointer; font-weight: 700; font-size: 0.85rem;">Aktif</button>
                         </div>
                     </div>
                 </div>
@@ -277,7 +291,7 @@
                                 <div style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> ID belum terdeteksi otomatis karena proteksi SINTA.</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan masukkan 7 digit ID yang ada di URL tab baru:</div>
                                 <input type="number" id="sinta-id-input-manual" style="width:100%; padding:0.5rem; border:1px solid var(--border-glass); border-radius:8px; margin-bottom:0.5rem;" placeholder="Contoh: 5973273">
-                                <button onclick="window.saveSintaIdManual(${id})" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
+                                <button onclick="window.saveSintaIdManual('${id}')" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
                             `;
                         }
                     })
@@ -286,7 +300,7 @@
                             <div style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Gagal menghubungi proxy.</div>
                             <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan masukkan 7 digit ID yang ada di URL tab baru:</div>
                             <input type="number" id="sinta-id-input-manual" style="width:100%; padding:0.5rem; border:1px solid var(--border-glass); border-radius:8px; margin-bottom:0.5rem;" placeholder="Contoh: 5973273">
-                            <button onclick="window.saveSintaIdManual(${id})" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
+                            <button onclick="window.saveSintaIdManual('${id}')" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
                         `;
                     });
             }
@@ -310,6 +324,27 @@
             localStorage.setItem('sintaIds', JSON.stringify(savedSintaIds));
             alert('ID SINTA berhasil disimpan!');
             document.getElementById('modal-container').style.display = 'none';
+            location.reload();
+        };
+
+        window.showManualInput = function(id) {
+            const statusEl = document.getElementById('sinta-detection-status');
+            const actionsEl = document.getElementById('sinta-confirm-actions');
+            
+            statusEl.innerHTML = `
+                <div style="color: var(--primary); margin-bottom: 0.5rem;"><i class="fas fa-info-circle"></i> Silakan masukkan ID Dosen secara manual.</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Silakan masukkan 7 digit ID yang ada di URL tab baru:</div>
+                <input type="number" id="sinta-id-input-manual" style="width:100%; padding:0.5rem; border:1px solid var(--border-glass); border-radius:8px; margin-bottom:0.5rem;" placeholder="Contoh: 5973273">
+                <button onclick="window.saveSintaIdManual('${id}')" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
+            `;
+            actionsEl.style.display = 'none';
+        };
+
+        window.updateStatus = function(id, status) {
+            const savedStatuses = JSON.parse(localStorage.getItem('lecturerStatuses') || '{}');
+            savedStatuses[id] = status;
+            localStorage.setItem('lecturerStatuses', JSON.stringify(savedStatuses));
+            alert('Status dosen berhasil diperbarui!');
             location.reload();
         };
     </script>
