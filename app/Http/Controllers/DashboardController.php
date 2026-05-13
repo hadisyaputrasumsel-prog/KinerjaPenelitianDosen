@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\File;
 
 class DashboardController extends Controller
 {
+    public function __construct()
+    {
+        config([
+            'database.connections.mysql.database' => 'kinerja_penelitian_dosen',
+            'database.connections.mysql.username' => 'root',
+            'database.connections.mysql.password' => '',
+        ]);
+    }
+
     public function index()
     {
         $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')->get()->map(function($item) {
