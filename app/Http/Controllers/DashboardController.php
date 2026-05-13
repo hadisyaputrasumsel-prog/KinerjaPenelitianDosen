@@ -101,9 +101,9 @@ class DashboardController extends Controller
 
         // Table 3.b.2 Logic
         $t3b2_data = [
-            'pt_mandiri' => ['ts2' => 0, 'ts1' => 0, 'ts' => 0],
-            'nasional' => ['ts2' => 0, 'ts1' => 0, 'ts' => 0],
-            'internasional' => ['ts2' => 0, 'ts1' => 0, 'ts' => 0],
+            'pt_mandiri' => ['ts2' => [], 'ts1' => [], 'ts' => []],
+            'nasional' => ['ts2' => [], 'ts1' => [], 'ts' => []],
+            'internasional' => ['ts2' => [], 'ts1' => [], 'ts' => []],
         ];
 
         foreach ($research as $r) {
@@ -111,11 +111,11 @@ class DashboardController extends Controller
             if (!$yearKey) continue;
 
             if ($r['source'] == 'Perguruan Tinggi' || $r['source'] == 'Mandiri') {
-                $t3b2_data['pt_mandiri'][$yearKey]++;
+                $t3b2_data['pt_mandiri'][$yearKey][] = $r;
             } elseif ($r['source'] == 'Lembaga Dalam Negeri') {
-                $t3b2_data['nasional'][$yearKey]++;
+                $t3b2_data['nasional'][$yearKey][] = $r;
             } elseif ($r['source'] == 'Lembaga Luar Negeri') {
-                $t3b2_data['internasional'][$yearKey]++;
+                $t3b2_data['internasional'][$yearKey][] = $r;
             }
         }
 
@@ -123,31 +123,43 @@ class DashboardController extends Controller
             [
                 'no' => 1,
                 'sumber' => "a) Perguruan tinggi\nb) Mandiri",
-                'ts2' => $t3b2_data['pt_mandiri']['ts2'],
-                'ts1' => $t3b2_data['pt_mandiri']['ts1'],
-                'ts' => $t3b2_data['pt_mandiri']['ts'],
-                'jumlah' => array_sum($t3b2_data['pt_mandiri'])
+                'ts2' => count($t3b2_data['pt_mandiri']['ts2']),
+                'ts1' => count($t3b2_data['pt_mandiri']['ts1']),
+                'ts' => count($t3b2_data['pt_mandiri']['ts']),
+                'ts2_items' => $t3b2_data['pt_mandiri']['ts2'],
+                'ts1_items' => $t3b2_data['pt_mandiri']['ts1'],
+                'ts_items' => $t3b2_data['pt_mandiri']['ts'],
+                'jumlah' => count($t3b2_data['pt_mandiri']['ts2']) + count($t3b2_data['pt_mandiri']['ts1']) + count($t3b2_data['pt_mandiri']['ts']),
+                'jumlah_items' => array_merge($t3b2_data['pt_mandiri']['ts2'], $t3b2_data['pt_mandiri']['ts1'], $t3b2_data['pt_mandiri']['ts'])
             ],
             [
                 'no' => 2,
                 'sumber' => 'Lembaga dalam negeri (diluar PT)',
-                'ts2' => $t3b2_data['nasional']['ts2'],
-                'ts1' => $t3b2_data['nasional']['ts1'],
-                'ts' => $t3b2_data['nasional']['ts'],
-                'jumlah' => array_sum($t3b2_data['nasional'])
+                'ts2' => count($t3b2_data['nasional']['ts2']),
+                'ts1' => count($t3b2_data['nasional']['ts1']),
+                'ts' => count($t3b2_data['nasional']['ts']),
+                'ts2_items' => $t3b2_data['nasional']['ts2'],
+                'ts1_items' => $t3b2_data['nasional']['ts1'],
+                'ts_items' => $t3b2_data['nasional']['ts'],
+                'jumlah' => count($t3b2_data['nasional']['ts2']) + count($t3b2_data['nasional']['ts1']) + count($t3b2_data['nasional']['ts']),
+                'jumlah_items' => array_merge($t3b2_data['nasional']['ts2'], $t3b2_data['nasional']['ts1'], $t3b2_data['nasional']['ts'])
             ],
             [
                 'no' => 3,
                 'sumber' => 'Lembaga luar negeri',
-                'ts2' => $t3b2_data['internasional']['ts2'],
-                'ts1' => $t3b2_data['internasional']['ts1'],
-                'ts' => $t3b2_data['internasional']['ts'],
-                'jumlah' => array_sum($t3b2_data['internasional'])
+                'ts2' => count($t3b2_data['internasional']['ts2']),
+                'ts1' => count($t3b2_data['internasional']['ts1']),
+                'ts' => count($t3b2_data['internasional']['ts']),
+                'ts2_items' => $t3b2_data['internasional']['ts2'],
+                'ts1_items' => $t3b2_data['internasional']['ts1'],
+                'ts_items' => $t3b2_data['internasional']['ts'],
+                'jumlah' => count($t3b2_data['internasional']['ts2']) + count($t3b2_data['internasional']['ts1']) + count($t3b2_data['internasional']['ts']),
+                'jumlah_items' => array_merge($t3b2_data['internasional']['ts2'], $t3b2_data['internasional']['ts1'], $t3b2_data['internasional']['ts'])
             ]
         ];
 
         // Table 3.b.4 Logic
-        $t3b4_data = array_fill(1, 10, ['ts2' => 0, 'ts1' => 0, 'ts' => 0]);
+        $t3b4_data = array_fill(1, 10, ['ts2' => [], 'ts1' => [], 'ts' => []]);
 
         foreach ($publications as $p) {
             $yearKey = $p['year'] == $ts ? 'ts' : ($p['year'] == $ts1 ? 'ts1' : ($p['year'] == $ts2 ? 'ts2' : null));
@@ -155,13 +167,13 @@ class DashboardController extends Controller
 
             $source = $p['source'];
             if ($source == 'Scholar') {
-                $t3b4_data[1][$yearKey]++; // Jurnal tidak terakreditasi
+                $t3b4_data[1][$yearKey][] = $p;
             } elseif (str_contains($source, 'SINTA')) {
-                $t3b4_data[2][$yearKey]++; // Jurnal Nasional Terakreditasi
+                $t3b4_data[2][$yearKey][] = $p;
             } elseif ($source == 'Scopus Q3' || $source == 'Scopus Q4') {
-                $t3b4_data[3][$yearKey]++; // Jurnal Internasional
+                $t3b4_data[3][$yearKey][] = $p;
             } elseif ($source == 'Scopus Q1' || $source == 'Scopus Q2') {
-                $t3b4_data[4][$yearKey]++; // Jurnal Internasional Bereputasi
+                $t3b4_data[4][$yearKey][] = $p;
             }
         }
 
@@ -183,10 +195,14 @@ class DashboardController extends Controller
             $table_3b4[] = [
                 'no' => $no,
                 'jenis' => $name,
-                'ts2' => $t3b4_data[$no]['ts2'],
-                'ts1' => $t3b4_data[$no]['ts1'],
-                'ts' => $t3b4_data[$no]['ts'],
-                'jumlah' => array_sum($t3b4_data[$no])
+                'ts2' => count($t3b4_data[$no]['ts2']),
+                'ts1' => count($t3b4_data[$no]['ts1']),
+                'ts' => count($t3b4_data[$no]['ts']),
+                'ts2_items' => $t3b4_data[$no]['ts2'],
+                'ts1_items' => $t3b4_data[$no]['ts1'],
+                'ts_items' => $t3b4_data[$no]['ts'],
+                'jumlah' => count($t3b4_data[$no]['ts2']) + count($t3b4_data[$no]['ts1']) + count($t3b4_data[$no]['ts']),
+                'jumlah_items' => array_merge($t3b4_data[$no]['ts2'], $t3b4_data[$no]['ts1'], $t3b4_data[$no]['ts'])
             ];
         }
 
