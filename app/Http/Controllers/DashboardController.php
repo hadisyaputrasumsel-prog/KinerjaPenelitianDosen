@@ -18,9 +18,12 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')->get()->map(function($item) {
-            return (array) $item;
-        })->toArray();
+        $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')
+            ->whereNotNull('sintaId')
+            ->where('sintaId', '!=', '')
+            ->get()->map(function($item) {
+                return (array) $item;
+            })->toArray();
 
         // Calculate Stats
         $totalLecturers = count($lecturers);
@@ -278,6 +281,14 @@ class DashboardController extends Controller
         $id = $request->input('id');
         $status = $request->input('status');
         $sintaId = $request->input('sintaId');
+
+        if ($status === 'Berhenti') {
+            \Illuminate\Support\Facades\DB::connection('mysql')->table('research')->where('lecturerId', $id)->delete();
+            \Illuminate\Support\Facades\DB::connection('mysql')->table('publications')->where('lecturerId', $id)->delete();
+            \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')->where('id', $id)->delete();
+            
+            return response()->json(["success" => true, "message" => "Data dosen berhasil dihapus"]);
+        }
 
         $data = [];
         if ($status) $data['status'] = $status;
