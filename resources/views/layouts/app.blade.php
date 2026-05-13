@@ -263,14 +263,8 @@
         };
 
         window.handleSintaSearch = function(id, name, force = false) {
-            const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
-            const sintaId = savedSintaIds[id];
-
-            if (sintaId && !force) {
-                window.open(`https://sinta.kemdiktisaintek.go.id/authors/profile/${sintaId}`, '_blank');
-            } else {
-                const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(name)}`;
-                window.open(searchUrl, '_blank');
+            const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(name)}`;
+            window.open(searchUrl, '_blank');
                 
                 const confirmContainer = document.getElementById('sinta-confirm-container');
                 const statusEl = document.getElementById('sinta-detection-status');
