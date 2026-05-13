@@ -9,7 +9,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $lecturers = \Illuminate\Support\Facades\DB::table('lecturers')->get()->map(function($item) {
+        $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')->get()->map(function($item) {
             return (array) $item;
         })->toArray();
 
@@ -37,7 +37,7 @@ class DashboardController extends Controller
 
     public function lecturers()
     {
-        $lecturers = \Illuminate\Support\Facades\DB::table('lecturers')->get()->map(function($item) {
+        $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')->get()->map(function($item) {
             return (array) $item;
         })->toArray();
         
@@ -94,11 +94,11 @@ class DashboardController extends Controller
 
     public function accreditation()
     {
-        $research = \Illuminate\Support\Facades\DB::table('research')->get()->map(function($item) {
+        $research = \Illuminate\Support\Facades\DB::connection('mysql')->table('research')->get()->map(function($item) {
             return (array) $item;
         })->toArray();
         
-        $publications = \Illuminate\Support\Facades\DB::table('publications')->get()->map(function($item) {
+        $publications = \Illuminate\Support\Facades\DB::connection('mysql')->table('publications')->get()->map(function($item) {
             return (array) $item;
         })->toArray();
 
@@ -278,7 +278,7 @@ class DashboardController extends Controller
             return response()->json(["success" => false, "message" => "No data to update"]);
         }
 
-        $updated = \Illuminate\Support\Facades\DB::table('lecturers')
+        $updated = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')
             ->where('id', $id)
             ->update($data);
 
