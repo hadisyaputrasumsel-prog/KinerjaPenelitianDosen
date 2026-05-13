@@ -226,9 +226,18 @@
                 </div>
 
                 <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 1rem;">
-                    <button id="sinta-action-btn" onclick="window.handleSintaSearch('${lecturer.id}', '${lecturer.name}')" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
-                        <i class="fas fa-external-link-alt"></i> ${sintaId ? 'Buka Profil SINTA' : 'Cari & Deteksi ID SINTA'}
-                    </button>
+                    ${sintaId ? `
+                        <button onclick="window.open('https://sinta.kemdiktisaintek.go.id/authors/profile/${sintaId}', '_blank')" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: #22c55e; color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                            <i class="fas fa-external-link-alt"></i> Buka Profil SINTA
+                        </button>
+                        <button onclick="window.handleSintaSearch('${lecturer.id}', '${lecturer.name}', true)" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                            <i class="fas fa-search"></i> Cari Ulang & Update ID SINTA
+                        </button>
+                    ` : `
+                        <button id="sinta-action-btn" onclick="window.handleSintaSearch('${lecturer.id}', '${lecturer.name}')" class="glass glass-hover" style="width: 100%; padding: 1rem; text-align: center; background: var(--primary); color: white; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer;">
+                            <i class="fas fa-search"></i> Cari & Deteksi ID SINTA
+                        </button>
+                    `}
                     <div id="sinta-confirm-container" style="display: none; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 10px; border: 1px solid var(--border-glass);">
                         <div id="sinta-detection-status" style="font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.8rem; font-weight: 500;">
                             <i class="fas fa-spinner fa-spin"></i> Mencari profil...
@@ -253,11 +262,11 @@
             modalContainer.style.display = 'flex';
         };
 
-        window.handleSintaSearch = function(id, name) {
+        window.handleSintaSearch = function(id, name, force = false) {
             const savedSintaIds = JSON.parse(localStorage.getItem('sintaIds') || '{}');
             const sintaId = savedSintaIds[id];
 
-            if (sintaId) {
+            if (sintaId && !force) {
                 window.open(`https://sinta.kemdiktisaintek.go.id/authors/profile/${sintaId}`, '_blank');
             } else {
                 const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(name)}`;
