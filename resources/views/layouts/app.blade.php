@@ -302,7 +302,6 @@
                             <button onclick="window.saveSintaIdManual('${id}')" style="width:100%; background:var(--primary); color:white; border:none; padding:0.6rem; border-radius:8px; font-weight:600; cursor:pointer;">Simpan Manual</button>
                         `;
                     });
-            }
         };
 
         window.saveSintaId = function(id) {
