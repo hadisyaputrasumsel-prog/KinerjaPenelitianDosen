@@ -9,18 +9,12 @@ class DashboardController extends Controller
 {
     public function __construct()
     {
-        config([
-            'database.connections.mysql.database' => 'kinerja_penelitian_dosen',
-            'database.connections.mysql.username' => 'root',
-            'database.connections.mysql.password' => '',
-        ]);
+        // Gunakan konfigurasi default dari .env
     }
 
     public function index()
     {
         $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')
-            ->whereNotNull('sintaId')
-            ->where('sintaId', '!=', '')
             ->get()->map(function($item) {
                 return (array) $item;
             })->toArray();
@@ -28,15 +22,16 @@ class DashboardController extends Controller
         // Calculate Stats
         $totalLecturers = count($lecturers);
         $totalResearch = array_sum(array_column($lecturers, 'scholar')) + array_sum(array_column($lecturers, 'scopus'));
-        $avgSinta = round(array_sum(array_column($lecturers, 'sintaOverall')) / $totalLecturers);
-        $avgSinta3Yr = round(array_sum(array_column($lecturers, 'sinta3Yr')) / $totalLecturers);
+        $avgSinta = $totalLecturers > 0 ? round(array_sum(array_column($lecturers, 'sintaOverall')) / $totalLecturers) : 0;
+        $avgSinta3Yr = $totalLecturers > 0 ? round(array_sum(array_column($lecturers, 'sinta3Yr')) / $totalLecturers) : 0;
         
         $stats = [
             'totalLecturers' => $totalLecturers,
             'totalResearch' => $totalResearch,
+            'totalPengabdian' => array_sum(array_column($lecturers, 'pengabdian')),
             'avgSinta' => $avgSinta,
             'avgSinta3Yr' => $avgSinta3Yr,
-            'productivityRatio' => round((count(array_filter($lecturers, fn($l) => $l['sinta3Yr'] >= 50)) / $totalLecturers) * 100),
+            'productivityRatio' => $totalLecturers > 0 ? round((count(array_filter($lecturers, fn($l) => $l['sinta3Yr'] >= 50)) / $totalLecturers) * 100) : 0,
             'productiveCount' => count(array_filter($lecturers, fn($l) => $l['sinta3Yr'] >= 50)),
             'lessActiveCount' => count(array_filter($lecturers, fn($l) => $l['sinta3Yr'] < 50)),
             'unggulCount' => count(array_filter($lecturers, fn($l) => $l['sinta3Yr'] > $avgSinta3Yr)),
@@ -54,7 +49,8 @@ class DashboardController extends Controller
         })->toArray();
         
         // Stats for filtering
-        $avgSinta3Yr = round(array_sum(array_column($lecturers, 'sinta3Yr')) / count($lecturers));
+        $totalLecturers = count($lecturers);
+        $avgSinta3Yr = $totalLecturers > 0 ? round(array_sum(array_column($lecturers, 'sinta3Yr')) / $totalLecturers) : 0;
 
         return view('lecturers', compact('lecturers', 'avgSinta3Yr'));
     }
@@ -66,8 +62,11 @@ class DashboardController extends Controller
 
     public function analytics()
     {
-        $jsonPath = database_path('data/lecturers.json');
-        $lecturers = json_decode(File::get($jsonPath), true);
+        $lecturers = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')
+            ->get()->map(function($item) {
+                return (array) $item;
+            })->toArray();
+            
         return view('analytics', compact('lecturers'));
     }
 
@@ -78,7 +77,8 @@ class DashboardController extends Controller
             return response()->json(["error" => "No name provided"]);
         }
 
-        $url = "https://sinta.kemdiktisaintek.go.id/authors?q=" . urlencode($name);
+        $affId = env('SINTA_AFFILIATION_ID', '8263');
+        $url = "https://sinta.kemdiktisaintek.go.id/authors?aff=" . $affId . "&q=" . urlencode($name);
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -104,15 +104,29 @@ class DashboardController extends Controller
         }
     }
 
-    public function accreditation()
+    public function accreditation(\Illuminate\Http\Request $request)
     {
-        $research = \Illuminate\Support\Facades\DB::connection('mysql')->table('research')->get()->map(function($item) {
-            return (array) $item;
-        })->toArray();
+        $selectedProdi = $request->query('prodi');
         
-        $publications = \Illuminate\Support\Facades\DB::connection('mysql')->table('publications')->get()->map(function($item) {
-            return (array) $item;
-        })->toArray();
+        $prodis = \Illuminate\Support\Facades\DB::connection('mysql')->table('lecturers')
+            ->select('prodi')->whereNotNull('prodi')->where('prodi', '!=', '')
+            ->distinct()->pluck('prodi')->toArray();
+
+        $researchQuery = \Illuminate\Support\Facades\DB::connection('mysql')->table('research')
+            ->join('lecturers', 'research.lecturerId', '=', 'lecturers.id')
+            ->select('research.*', 'lecturers.prodi');
+            
+        $pubQuery = \Illuminate\Support\Facades\DB::connection('mysql')->table('publications')
+            ->join('lecturers', 'publications.lecturerId', '=', 'lecturers.id')
+            ->select('publications.*', 'lecturers.prodi');
+
+        if ($selectedProdi) {
+            $researchQuery->where('lecturers.prodi', $selectedProdi);
+            $pubQuery->where('lecturers.prodi', $selectedProdi);
+        }
+
+        $research = $researchQuery->get()->map(function($item) { return (array) $item; })->toArray();
+        $publications = $pubQuery->get()->map(function($item) { return (array) $item; })->toArray();
 
         // Define years
         $ts = 2026;
@@ -194,6 +208,9 @@ class DashboardController extends Controller
                 $t3b4_data[3][$yearKey][] = $p;
             } elseif ($source == 'Scopus Q1' || $source == 'Scopus Q2') {
                 $t3b4_data[4][$yearKey][] = $p;
+            } else {
+                // If it's Pengabdian or something else, default to category 5 for now
+                $t3b4_data[5][$yearKey][] = $p;
             }
         }
 
@@ -226,7 +243,7 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('accreditation', compact('table_3b2', 'table_3b4'));
+        return view('accreditation', compact('table_3b2', 'table_3b4', 'prodis', 'selectedProdi'));
     }
 
     public function crawlScholar(\Illuminate\Http\Request $request)

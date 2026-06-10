@@ -9,8 +9,8 @@
     <p style="color: var(--text-muted); margin-bottom: 2rem;">Sinkronisasi data otomatis dari berbagai database index penelitian.</p>
     
     <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 2rem;">
-        <div class="glass" style="padding: 1rem; flex: 1;">
-            <img src="https://sinta.kemdikbud.go.id/assets/img/logo-sinta.png" style="height: 30px; filter: grayscale(1) invert(1); opacity: 0.7;">
+        <div class="glass" style="padding: 1rem; flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 600; color: var(--text-main);">
+            <i class="fas fa-database" style="font-size: 1.5rem; color: var(--primary);"></i> SINTA
         </div>
         <div class="glass" style="padding: 1rem; flex: 1;">
             <i class="fab fa-google" style="font-size: 1.5rem; color: var(--text-muted);"></i> Scholar
@@ -20,7 +20,17 @@
         </div>
     </div>
 
-    <div style="margin-bottom: 1.5rem; max-width: 400px; margin-left: auto; margin-right: auto;">
+    <div class="glass" style="margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: left; padding: 1.5rem; border-radius: 12px; border-left: 4px solid var(--primary);">
+        <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary);"><i class="fas fa-cog"></i> Konfigurasi SINTA</h3>
+        <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.5rem; display: block;">URL SINTA Affiliation (Opsional)</label>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="sinta-aff-url" value="https://sinta.kemdiktisaintek.go.id/affiliations/profile/{{ env('SINTA_AFFILIATION_ID', '8263') }}" style="flex: 1; padding: 0.75rem; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; background: rgba(255,255,255,0.9); font-size: 0.9rem;" placeholder="https://sinta.kemdiktisaintek.go.id/affiliations/profile/...">
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Secara default menggunakan ID Afiliasi USS: <b>{{ env('SINTA_AFFILIATION_ID', '8263') }}</b></div>
+    </div>
+
+    <div style="margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto; text-align: left;">
+        <label style="font-weight: 600; font-size: 0.85rem; color: var(--text-main); margin-bottom: 0.5rem; display: block;">Tarik Data via Google Scholar</label>
         <input type="text" id="scholar-name" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-glass); border-radius: 10px; background: rgba(255,255,255,0.8);" placeholder="Masukkan Nama Dosen (Contoh: Ahmad Sanmorino)">
     </div>
 

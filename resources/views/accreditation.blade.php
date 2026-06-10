@@ -2,12 +2,28 @@
 
 @section('content')
 <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
-    <h1 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--primary);">Laporan Akreditasi DTPS</h1>
-    <p style="color: var(--text-muted); font-size: 0.9rem;">Tabel standar 3.b.2 dan 3.b.4 untuk keperluan akreditasi program studi.</p>
+    <h1 style="font-size: 1.8rem; margin-bottom: 1.5rem; color: var(--primary);">Laporan Akreditasi DTPS</h1>
+    
+    <form method="GET" action="{{ route('accreditation') }}" style="display: flex; gap: 1rem; align-items: flex-end;">
+        <div style="flex: 1; max-width: 400px;">
+            <label for="prodi" style="display: block; font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Filter Berdasarkan Program Studi:</label>
+            <select name="prodi" id="prodi" style="width: 100%; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border-glass); background: white; font-family: 'Inter', sans-serif;">
+                <option value="">-- Semua Program Studi --</option>
+                @foreach($prodis as $p)
+                    <option value="{{ $p }}" {{ $selectedProdi == $p ? 'selected' : '' }}>{{ $p }}</option>
+                @endforeach
+            </select>
+        </div>
+        <button type="submit" class="glass glass-hover" style="background: var(--primary); color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600;">
+            <i class="fas fa-filter"></i> Terapkan Filter
+        </button>
+        @if($selectedProdi)
+            <a href="{{ route('accreditation') }}" style="padding: 0.8rem 1.5rem; color: #ef4444; text-decoration: none; font-weight: 600; font-size: 0.9rem;"><i class="fas fa-times"></i> Hapus Filter</a>
+        @endif
+    </form>
 </div>
 
 <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
-    <h2 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--primary);">Tabel 3.b.2 Penelitian DTPS</h2>
     <div style="overflow-x: auto;">
         <table class="accreditation-table">
             <thead>
@@ -71,7 +87,6 @@
 </div>
 
 <div class="glass" style="padding: 2rem; margin-bottom: 2rem;">
-    <h2 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--primary);">Tabel 3.b.4 Pengelaran/Pameran/presentasi/publikasi Ilmiah DTPS</h2>
     <div style="overflow-x: auto;">
         <table class="accreditation-table">
             <thead>
@@ -133,6 +148,7 @@
         </table>
     </div>
 </div>
+
 
 <style>
     .accreditation-table {

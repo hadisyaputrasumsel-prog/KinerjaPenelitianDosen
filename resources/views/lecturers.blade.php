@@ -12,7 +12,11 @@
     @foreach($lecturers as $l)
         <div class="lecturer-card glass" data-id="{{ $l['id'] }}">
             <div class="lecturer-header">
-                <div class="avatar">{{ substr($l['name'], 0, 1) }}</div>
+                @if(!empty($l['image_url']))
+                    <img src="{{ $l['image_url'] }}" class="avatar" style="object-fit: cover;" onerror="this.onerror=null; this.src='https://sinta.kemdiktisaintek.go.id/public/assets/img/author-small.png';">
+                @else
+                    <div class="avatar">{{ substr($l['name'], 0, 1) }}</div>
+                @endif
                 <div class="lecturer-info">
                     <h3>{{ $l['name'] }}</h3>
                     <p>{{ $l['prodi'] }}</p>

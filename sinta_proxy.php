@@ -8,7 +8,7 @@ if (!$name) {
     exit;
 }
 
-$url = "https://sinta.kemdiktisaintek.go.id/authors?q=" . $name;
+$url = "https://sinta.kemdiktisaintek.go.id/authors?aff=8263&q=" . $name;
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);

@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>UIGM - Kinerja Penelitian Dosen</title>
+    <title>USS - Kinerja Penelitian Dosen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="icon" href="https://uigm.ac.id/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.svg" type="image/x-icon">
     <style>
         :root {
-            --primary: #0f2e5a;
-            --primary-glow: rgba(15, 46, 90, 0.2);
-            --secondary: #d7ac7c;
+            --primary: #177a8c;
+            --primary-glow: rgba(23, 122, 140, 0.2);
+            --secondary: #e2f1f4;
             --bg-dark: #f0f4f8;
             --bg-card: rgba(255, 255, 255, 0.85);
             --text-main: #1f2937;
@@ -131,7 +131,13 @@
     <div id="app">
         <aside>
             <div class="logo">
-                <img src="https://www.uigm.ac.id/wp-content/uploads/2025/06/logo-uigm_putih.png" alt="Logo UIGM">
+                <div class="logo-container" style="text-align: center;">
+                    <img src="/logo.png" alt="Logo Universitas Sumatera Selatan" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block';" style="max-width: 100%; width: 190px; background: white; padding: 12px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);">
+                    <div id="logo-text" style="display: none;">
+                        <h2 style="color: white; margin: 0; font-size: 2rem; text-align: center; font-weight: 800; letter-spacing: 2px;">USS</h2>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8); text-align: center; margin-top: 5px;">Universitas Sumatera Selatan</div>
+                    </div>
+                </div>
             </div>
             <nav>
                 <ul>
@@ -147,8 +153,8 @@
         <main>
             <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <div>
-                    <h1>Dashboard Kinerja Penelitian</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Monitoring & Pelaporan Kinerja Penelitian Dosen UIGM.</p>
+                    <h1 style="font-size: 2.2rem; font-weight: 800; color: #0f2e5a; margin-bottom: 0.5rem;">Dashboard Kinerja Penelitian & Pengabdian</h1>
+                    <p style="color: var(--text-main); font-size: 1.1rem; font-weight: 600;">Monitoring & Pelaporan Kinerja Penelitian dan Pengabdian Kepada Masyarakat Dosen Universitas Sumatera Selatan.</p>
                 </div>
                 <div style="display: flex; gap: 1rem; align-items: center;">
                     <div class="realtime-badge">
@@ -263,7 +269,7 @@
         };
 
         window.handleSintaSearch = function(id, name, force = false) {
-            const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?q=${encodeURIComponent(name)}`;
+            const searchUrl = `https://sinta.kemdiktisaintek.go.id/authors?aff={{ env('SINTA_AFFILIATION_ID', '8263') }}&q=${encodeURIComponent(name)}`;
             window.open(searchUrl, '_blank');
                 
                 const confirmContainer = document.getElementById('sinta-confirm-container');
